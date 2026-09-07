@@ -63,3 +63,9 @@
 - Unsupported formats, malformed SHA-256 values and invalid byte sizes are rejected before descriptor creation.
 - Figma tests: PASS — 25 tests, 0 failures; bundle syntax check passed.
 - SVG import, sanitization and remote asset fetching remain intentionally disabled and require a separate security-gated task.
+
+## Task 8A — 2026-09-07
+
+- Hardened both in-memory and WordPress asset stores against unsupported MIME types.
+- Direct calls can no longer bypass the PNG/JPEG allowlist and fall back to an unsafe `.bin` upload.
+- Targeted PHPUnit: PASS — 1 test, 2 assertions; PHPStan and PHPCS: PASS.

@@ -19,11 +19,17 @@ interface AssetStore
 
 final class InMemoryAssetStore implements AssetStore
 {
+    /** @var list<string> */
+    private const SUPPORTED_MIME = ['image/png', 'image/jpeg'];
+
     /** @var array<string,AssetReceipt> */
     private array $assets = [];
 
     public function put(string $sha256, string $bytes, string $mime): AssetReceipt
     {
+        if (!in_array(strtolower(trim($mime)), self::SUPPORTED_MIME, true)) {
+            throw new \InvalidArgumentException('Unsupported asset MIME.');
+        }
         if (!hash_equals($sha256, hash('sha256', $bytes))) {
             throw new \InvalidArgumentException('Asset checksum does not match payload.');
         }
@@ -41,9 +47,15 @@ final class InMemoryAssetStore implements AssetStore
 final class WpAssetStore implements AssetStore
 {
     private const OPTION_PREFIX = 'fem_asset_';
+    /** @var list<string> */
+    private const SUPPORTED_MIME = ['image/png', 'image/jpeg'];
 
     public function put(string $sha256, string $bytes, string $mime): AssetReceipt
     {
+        $mime = strtolower(trim($mime));
+        if (!in_array($mime, self::SUPPORTED_MIME, true)) {
+            throw new \InvalidArgumentException('Unsupported asset MIME.');
+        }
         if (!function_exists('wp_upload_bits') || !function_exists('update_option')) {
             throw new \RuntimeException('WordPress upload APIs are unavailable.');
         }
@@ -56,10 +68,9 @@ final class WpAssetStore implements AssetStore
         }
         // WordPress refuses unknown extensions, so ".bin" was always rejected.
         // The MIME is already verified upstream, so the real extension is safe.
-        $extension = match (strtolower(trim($mime))) {
+        $extension = match ($mime) {
             'image/png' => 'png',
             'image/jpeg' => 'jpg',
-            default => 'bin',
         };
         $upload = wp_upload_bits('fem-' . $sha256 . '.' . $extension, null, $bytes);
         if (!empty($upload['error'])) {
