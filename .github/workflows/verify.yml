@@ -22,7 +22,7 @@ jobs:
           extensions: mbstring
       - run: composer install --no-interaction --prefer-dist
       - run: php vendor/bin/phpunit -c phpunit.xml.dist
-      - run: php vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=512M
+      - run: php vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=1536M
       - run: php vendor/bin/phpcs --standard=phpcs.xml.dist
 
   figma-and-blocks:
@@ -34,6 +34,13 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: tools/block-validation/package-lock.json
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          extensions: mbstring
+      - run: composer install --no-interaction --prefer-dist
+        working-directory: packages/wordpress-plugin
       - run: node --test tests/workflow.test.cjs
         working-directory: packages/figma-plugin
       - run: node --check src/code.js
