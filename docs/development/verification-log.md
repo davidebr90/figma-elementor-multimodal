@@ -17,3 +17,9 @@
 - Artifact hashes: not generated for this baseline; no release artifact was produced.
 - Notes: Composer dependencies were installed in the isolated worktree through the `composer:2` Docker image because the host PHP lacked ZIP support. No product source files were changed by dependency setup.
 
+## Task 1 — 2026-09-07
+
+- Commit: pending until integration gate.
+- Figma characterization: PASS — 17 tests, 0 failures.
+- WordPress schema characterization: PASS — 4 tests, 9 assertions, including desktop/tablet/mobile fixture preservation.
+- Production behavior changed: no; only fixtures, tests and this verification record were added.

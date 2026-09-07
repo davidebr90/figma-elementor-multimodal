@@ -1,0 +1,30 @@
+{
+  "kind": "fem.document",
+  "schemaVersion": "1.0.0",
+  "source": {"provider": "figma", "identity": "test-file:responsive"},
+  "roots": ["root"],
+  "nodes": {
+    "root": {
+      "id": "root",
+      "widget": "container",
+      "children": ["heading"],
+      "layout": {"padding": {"top": 48, "right": 24, "bottom": 48, "left": 24}},
+      "responsive": {
+        "tablet": {"layout": {"padding": {"top": 32, "right": 20, "bottom": 32, "left": 20}}},
+        "mobile": {"layout": {"padding": {"top": 20, "right": 16, "bottom": 20, "left": 16}}}
+      }
+    },
+    "heading": {
+      "id": "heading",
+      "widget": "heading",
+      "children": [],
+      "text": {"characters": "Responsive heading"},
+      "responsive": {"mobile": {"visible": false}}
+    }
+  },
+  "assets": {},
+  "editables": [],
+  "capabilities": [],
+  "revisions": {"figmaRevision": "responsive-1"},
+  "integrity": {"algorithm": "sha256-jcs", "contentHash": "346db8d57f6346923be968d25d59fa99d1da2732bbf0eecc11d435b5bf3a7e74"}
+}

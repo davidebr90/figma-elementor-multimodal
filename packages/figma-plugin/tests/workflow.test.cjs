@@ -73,6 +73,22 @@ test('captured mobile root reaches the renderer contract during extraction', asy
   assert.equal(root.layout.padding.top, 48);
 });
 
+test('v1 extraction preserves source identity, node identity and responsive deltas', async () => {
+  const { context } = harness();
+  const frame = {
+    id: 'desktop-root', name: 'Hero', type: 'FRAME', children: [], layoutMode: 'VERTICAL',
+    width: 1200, height: 500, paddingTop: 48, paddingRight: 24, paddingBottom: 48, paddingLeft: 24,
+  };
+  context.figma.currentPage.selection = [frame];
+  const result = await vm.runInContext('extractSelection(figma.currentPage.selection)', context);
+
+  assert.equal(result.document.schemaVersion, '1.0.0');
+  assert.equal(result.document.source.provider, 'figma');
+  assert.equal(result.document.roots.length, 1);
+  assert.equal(result.document.nodes[result.document.roots[0]].layout.padding.top, 48);
+  assert.match(result.document.nodes[result.document.roots[0]].id, /^urn:fem:figma:/);
+});
+
 test('site-wide token sync succeeds without a selected WordPress page', async () => {
   const { context, calls } = harness();
   await vm.runInContext('syncDesignSystem()', context);

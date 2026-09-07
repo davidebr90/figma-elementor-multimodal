@@ -41,6 +41,19 @@ final class SchemaValidatorTest extends TestCase
         self::assertTrue(true);
     }
 
+    public function testCurrentV1ResponsiveFixturePreservesDesktopAndMobileIntent(): void
+    {
+        /** @var array<string,mixed> $document */
+        $document = json_decode((string) file_get_contents(__DIR__ . '/../fixtures/valid-responsive.json'), true, 512, JSON_THROW_ON_ERROR);
+
+        (new SchemaValidator())->assertValid($document);
+
+        self::assertSame(48, $document['nodes']['root']['layout']['padding']['top']);
+        self::assertSame(32, $document['nodes']['root']['responsive']['tablet']['layout']['padding']['top']);
+        self::assertSame(20, $document['nodes']['root']['responsive']['mobile']['layout']['padding']['top']);
+        self::assertFalse($document['nodes']['heading']['responsive']['mobile']['visible']);
+    }
+
     /** @return array<string,mixed> */
     private function document(): array
     {
