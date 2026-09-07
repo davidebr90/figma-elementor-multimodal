@@ -19,6 +19,8 @@ final class DocumentWriter
         $existing = get_post_meta($pageId, '_elementor_data', true);
         $tree = $this->decodeExisting($existing, $replace);
         $tree = is_array($tree) && !$replace ? $tree : [];
+        $this->validateElements($tree, 'existing');
+        $this->validateElements($elements, 'incoming');
         $elements = $replace ? $elements : $this->avoidIdCollisions($tree, $elements);
         $tree = array_merge($tree, $elements);
 
@@ -81,6 +83,31 @@ final class DocumentWriter
         }
         unset($element);
         return $elements;
+    }
+
+    /** @param array<mixed> $elements */
+    private function validateElements(array $elements, string $source): void
+    {
+        foreach ($elements as $index => $element) {
+            if (!is_array($element)) {
+                throw new \RuntimeException("Elementor {$source} element {$index} is not an object.");
+            }
+            if (!isset($element['id']) || !is_string($element['id']) || preg_match('/^[a-z0-9]{7}$/', $element['id']) !== 1) {
+                throw new \RuntimeException("Elementor {$source} element {$index} has an invalid ID.");
+            }
+            if (!isset($element['elType']) || !is_string($element['elType']) || !in_array($element['elType'], ['container', 'section', 'column', 'widget'], true)) {
+                throw new \RuntimeException("Elementor {$source} element {$index} has an invalid element type.");
+            }
+            if (isset($element['settings']) && !is_array($element['settings'])) {
+                throw new \RuntimeException("Elementor {$source} element {$index} has invalid settings.");
+            }
+            if (isset($element['elements'])) {
+                if (!is_array($element['elements'])) {
+                    throw new \RuntimeException("Elementor {$source} element {$index} has invalid children.");
+                }
+                $this->validateElements($element['elements'], $source);
+            }
+        }
     }
 
     /** @param array<mixed> $tree @param array<string,bool> $used */

@@ -123,3 +123,4 @@
 - Replace mode preserves the explicit destructive semantics.
 - Writer tests: PASS — malformed JSON, replace, and collision-remap paths covered.
 - JSON persistence failure is now fail-closed; no empty `_elementor_data` value is written.
+- Elementor element trees are structurally validated before append/replace persistence; malformed incoming or existing nodes are rejected.

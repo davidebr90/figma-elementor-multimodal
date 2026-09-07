@@ -40,14 +40,14 @@ final class DocumentWriterTest extends TestCase
     public function testReplaceIgnoresMalformedExistingDataByExplicitRequest(): void
     {
         $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = '{broken';
-        self::assertSame(1, (new DocumentWriter())->write(12, [['id' => 'new']], true));
+        self::assertSame(1, (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elType' => 'widget']], true));
     }
 
     public function testAppendRemapsCollidingElementIds(): void
     {
-        $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = json_encode([['id' => 'abc1234', 'elements' => []]]);
+        $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = json_encode([['id' => 'abc1234', 'elType' => 'widget', 'elements' => []]]);
 
-        self::assertSame(2, (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elements' => []]], false));
+        self::assertSame(2, (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elType' => 'widget', 'elements' => []]], false));
         $saved = json_decode(stripslashes((string) $GLOBALS['fem_test_post_meta'][12]['_elementor_data']), true);
         self::assertNotSame('abc1234', $saved[1]['id']);
         self::assertMatchesRegularExpression('/^[a-z0-9]{7}$/', $saved[1]['id']);
@@ -58,7 +58,23 @@ final class DocumentWriterTest extends TestCase
         $GLOBALS['fem_test_json_failure'] = true;
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('could not be encoded');
-        (new DocumentWriter())->write(12, [['id' => 'new']], true);
+        (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elType' => 'widget']], true);
         self::assertArrayNotHasKey('_elementor_data', $GLOBALS['fem_test_post_meta'][12] ?? []);
+    }
+
+    public function testMalformedIncomingElementIsRejectedBeforeWriting(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('incoming element 0 has an invalid element type');
+        (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elType' => 'unknown']], true);
+        self::assertArrayNotHasKey('_elementor_data', $GLOBALS['fem_test_post_meta'][12] ?? []);
+    }
+
+    public function testMalformedExistingElementIsRejectedBeforeAppend(): void
+    {
+        $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = json_encode([['id' => 'abc1234', 'elType' => 'unknown']]);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('existing element 0 has an invalid element type');
+        (new DocumentWriter())->write(12, [['id' => 'def5678', 'elType' => 'widget']], false);
     }
 }
