@@ -6,7 +6,7 @@ FEM Setup is a Tauri 2 desktop wizard that checks a WordPress website, creates a
 
 | Platform | Code status | Current distribution | Required before stable release |
 | --- | --- | --- | --- |
-| Windows | Tauri build configured | Source build or development CI artifact | Authenticode signing, clean-install test, signed release |
+| Windows | Tauri build verified locally | Local unsigned x64 MSI and NSIS bundles generated | Authenticode signing, clean-install test, signed release |
 | macOS | Tauri build configured | Source build or development CI artifact | Developer ID signing, Apple notarization, Intel/Apple Silicon testing |
 | GNU/Linux | Tauri build configured | Source build or development CI artifact | Generated-package testing and real Figma-Linux-build compatibility |
 

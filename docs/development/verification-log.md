@@ -137,4 +137,5 @@
 - Gutenberg import: PASS — native `core/group` content persisted with FEM identity classes.
 - Elementor append/replace/idempotency: PASS — append preserves unique IDs, replace leaves one top-level element, repeated commit returns the same snapshot.
 - Schema recovery: PASS — forcing an obsolete schema version triggers automatic idempotent migration during bootstrap.
+- Windows installer packaging: PASS — unsigned x64 MSI and NSIS bundles generated locally with Tauri 2; macOS/Linux artifacts remain CI/native-runner work.
 - Added a Windows runtime preflight that fails early when Docker or the authorized Elementor package is unavailable.
