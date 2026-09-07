@@ -19,6 +19,12 @@ if (-not $output.StartsWith($repository, [System.StringComparison]::OrdinalIgnor
 
 $composer = Get-Command composer -ErrorAction SilentlyContinue
 $composerPhar = Join-Path $repository 'tools\composer.phar'
+if (-not (Test-Path -LiteralPath $composerPhar)) {
+    $runtimeComposer = Join-Path $repository '.runtime\composer.phar'
+    if (Test-Path -LiteralPath $runtimeComposer) {
+        $composerPhar = $runtimeComposer
+    }
+}
 if ($null -eq $composer -and -not (Test-Path -LiteralPath $composerPhar)) {
     throw 'Composer is required to package the WordPress plugin. Install Composer or place composer.phar in tools/.'
 }

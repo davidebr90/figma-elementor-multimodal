@@ -24,6 +24,8 @@ In PowerShell è disponibile anche lo script di packaging riproducibile:
 .\tools\package-release.ps1
 ```
 
+Lo script accetta Composer globale, `tools/composer.phar` oppure il runtime locale `.runtime/composer.phar`.
+
 Genera gli ZIP in `dist/`, directory esclusa dal controllo di versione. Il pacchetto Figma è per il caricamento manuale in sviluppo; per un sito reale resta consigliato il manifest ristretto generato dal wizard.
 
 Non includere file `.env`, log, dump database, directory `vendor` di sviluppo o credenziali nel repository.
