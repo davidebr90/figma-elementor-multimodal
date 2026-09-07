@@ -1,0 +1,9 @@
+parameters:
+    level: 5
+    dynamicConstantNames:
+        - ABSPATH
+    paths:
+        - src
+    scanFiles:
+        - phpstan-wordpress-stubs.php
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

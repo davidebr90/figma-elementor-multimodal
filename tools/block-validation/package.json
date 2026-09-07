@@ -1,0 +1,1 @@
+{"name":"fem-block-validation","private":true,"scripts":{"test":"node roundtrip.cjs"},"devDependencies":{"@wordpress/blocks":"15.27.0","@wordpress/block-library":"10.5.0","jsdom":"26.1.0"}}

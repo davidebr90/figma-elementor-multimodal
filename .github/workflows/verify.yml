@@ -1,0 +1,44 @@
+name: FEM source verification
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  wordpress:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/wordpress-plugin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          extensions: mbstring
+      - run: composer install --no-interaction --prefer-dist
+      - run: php vendor/bin/phpunit -c phpunit.xml.dist
+      - run: php vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=512M
+      - run: php vendor/bin/phpcs --standard=phpcs.xml.dist
+
+  figma-and-blocks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/block-validation/package-lock.json
+      - run: node --test tests/workflow.test.cjs
+        working-directory: packages/figma-plugin
+      - run: node --check src/code.js
+        working-directory: packages/figma-plugin
+      - run: npm ci
+        working-directory: tools/block-validation
+      - run: npm test
+        working-directory: tools/block-validation

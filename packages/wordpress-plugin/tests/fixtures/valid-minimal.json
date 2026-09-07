@@ -1,0 +1,12 @@
+{
+  "kind": "fem.document",
+  "schemaVersion": "1.0.0",
+  "source": {"provider": "figma", "identity": "test-file:1:1"},
+  "roots": ["root"],
+  "nodes": {"root": {"id": "root", "widget": "container", "children": []}},
+  "assets": {},
+  "editables": [],
+  "capabilities": [],
+  "revisions": {"figmaRevision": "1"},
+  "integrity": {"algorithm": "sha256-jcs", "contentHash": "a8f26c15e4f55654dba235b8a9bfb03f59a7b305530afde1e09eef096882a3cd"}
+}

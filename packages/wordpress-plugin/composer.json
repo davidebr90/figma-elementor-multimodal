@@ -1,0 +1,34 @@
+{
+  "name": "figma-elementor-multimodal/wordpress-plugin",
+  "description": "Secure Figma-to-WordPress integration for Elementor and Gutenberg.",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=8.3"
+  },
+  "require-dev": {
+    "php-stubs/wordpress-stubs": "^7.1",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^11.5",
+    "squizlabs/php_codesniffer": "^3.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "FEM\\": "src/"
+    },
+    "classmap": ["src/"]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FEM\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit -c phpunit.xml.dist",
+    "stan": "phpstan analyse --configuration=phpstan.neon",
+    "lint": "phpcs --standard=phpcs.xml.dist"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

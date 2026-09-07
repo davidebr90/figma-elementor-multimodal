@@ -1,0 +1,25 @@
+import {invoke,isTauri} from '@tauri-apps/api/core';
+import {normalizeSite} from './core.js';
+import './style.css';
+import logo from '../../../assets/brand/fem-logo-primary.png';
+const app=document.querySelector('#app');
+app.innerHTML=`<aside><img src="${logo}" alt="Figma Elementor Multimodal"><p class="eyebrow">FEM SETUP · 0.1</p><h1>Dal design<br>al tuo sito.</h1><p>Prepara Figma, collega WordPress e porta i tuoi componenti in Elementor.</p><ol><li>Il tuo ambiente</li><li>Prepara il plugin</li><li>Collega e importa</li></ol></aside><main><p class="eyebrow">CONFIGURAZIONE GUIDATA</p><h2>Un flusso, tante possibilità.</h2><p id="platform"></p><section><h3>1. Il tuo WordPress</h3><label for="site">Indirizzo del sito</label><input id="site" type="url" placeholder="https://example.com"><label class="check"><input id="local" type="checkbox"> Ambiente locale di sviluppo</label><button id="probe">Verifica connessione</button></section><section><h3>2. Prepara il plugin Figma</h3><p>I file vengono salvati in una cartella FEM dedicata al tuo utente. Ogni preparazione crea una copia distinta.</p><button id="prepare" disabled>Prepara i file</button><output id="path"></output><p>In Figma: Plugins → Development → Import plugin from manifest… Seleziona il manifest indicato qui sopra.</p></section><section><h3>3. Collega e importa</h3><p>Apri FEM Pairing negli strumenti WordPress e genera un codice temporaneo. Avvia il plugin in Figma: il sito è già compilato. Inserisci lì ID e codice, seleziona un frame e scegli la pagina di destinazione.</p><p id="pairing"></p><p>La verifica del sito non conferma un import. Controlla l’esito nel plugin e apri la pagina con Elementor.</p></section><p role="status" aria-live="polite" id="status"></p></main>`;
+const site=document.querySelector('#site'), local=document.querySelector('#local'), status=document.querySelector('#status'), prepare=document.querySelector('#prepare');
+let checked=null;
+let saved=null;try{saved=JSON.parse(localStorage.getItem('fem.setup.preferences')||'null')}catch{localStorage.removeItem('fem.setup.preferences')}
+if(saved&&typeof saved.site==='string'){site.value=saved.site;local.checked=saved.local===true}
+const restore=document.createElement('button');restore.textContent='Ripristina versione precedente';restore.disabled=!isTauri();
+prepare.after(restore);
+restore.onclick=()=>action(async()=>{const value=normalizeSite(site.value,local.checked);document.querySelector('#path').textContent=await invoke('rollback',{site:value,local:local.checked});say('Versione precedente ripristinata. Riapri il plugin in Figma.');});
+const closed=document.createElement('label');closed.className='check';const confirmClosed=document.createElement('input');confirmClosed.type='checkbox';closed.append(confirmClosed,' Ho chiuso il plugin FEM in Figma prima di preparare o ripristinare i file.');prepare.before(closed);
+const prepareOriginal=prepare;
+prepareOriginal.addEventListener('click',event=>{if(!confirmClosed.checked){event.stopImmediatePropagation();say('Chiudi il plugin FEM e seleziona la conferma prima di proseguire.',true)}},true);
+restore.addEventListener('click',event=>{if(!confirmClosed.checked){event.stopImmediatePropagation();say('Chiudi prima il plugin FEM e seleziona la conferma.',true)}},true);
+for(const input of [site,local])input.addEventListener('change',()=>localStorage.setItem('fem.setup.preferences',JSON.stringify({site:site.value,local:local.checked})));
+function say(message,error=false){status.textContent=message;status.className=error?'error':'success'}
+async function action(fn){document.querySelectorAll('button').forEach(b=>b.disabled=true);try{await fn()}catch(e){say(String(e),true)}finally{document.querySelector('#probe').disabled=!isTauri();prepare.disabled=!checked;restore.disabled=!isTauri()}}
+for(const input of [site,local]) input.addEventListener('input',()=>{checked=null;prepare.disabled=true;document.querySelector('#path').textContent='';say('Verifica il nuovo indirizzo.')});
+document.querySelector('#probe').onclick=()=>action(async()=>{checked=null;const value=normalizeSite(site.value,local.checked);say('Verifica REST in corso…');const result=await invoke('probe',{site:value,local:local.checked});checked=value;say(result);const a=document.createElement('a');a.href=value+'/wp-admin/tools.php?page=fem-pairing';a.textContent='Indirizzo della pagina FEM Pairing: '+a.href;document.querySelector('#pairing').replaceChildren(document.createTextNode(a.textContent));});
+prepare.onclick=()=>action(async()=>{if(!checked)throw Error('Verifica prima il sito.');const path=await invoke('prepare',{site:checked,local:local.checked});document.querySelector('#path').textContent=path;say('Pacchetto pronto. Importa ora il manifest in Figma; il collegamento sarà verificato dal plugin.');});
+if(isTauri()){invoke('environment').then(r=>document.querySelector('#platform').textContent=r).catch(e=>say(String(e),true))}
+else{document.querySelector('#platform').textContent='Anteprima web: installazione e verifica disponibili nell’app desktop.';document.querySelector('#probe').disabled=true}

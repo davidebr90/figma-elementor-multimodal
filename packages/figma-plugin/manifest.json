@@ -1,0 +1,15 @@
+{
+  "name": "FEM – Figma Elementor Multimodal",
+  "id": "fem-private-import",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "src/code.js",
+  "ui": "src/ui/index.html",
+  "documentAccess": "dynamic-page",
+  "enablePrivatePluginApi": true,
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "This development manifest is for local WordPress testing. FEM Setup generates a site-scoped manifest for normal use.",
+    "devAllowedDomains": ["http://localhost:8096", "http://127.0.0.1:8096", "http://[::1]:8096"]
+  }
+}

@@ -1,0 +1,38 @@
+name: FEM Setup builds
+on:
+  workflow_dispatch:
+  push:
+    paths: ['apps/installer/**', 'packages/figma-plugin/**', '.github/workflows/installer.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/installer/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libxdo-dev libssl-dev librsvg2-dev libayatana-appindicator3-dev patchelf
+      - run: npm ci
+        working-directory: apps/installer
+      - run: npm test
+        working-directory: apps/installer
+      - run: npm run build
+        working-directory: apps/installer
+      - run: cargo test --locked
+        working-directory: apps/installer/src-tauri
+      - run: npm run tauri build
+        working-directory: apps/installer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fem-setup-development-${{ matrix.os }}
+          path: apps/installer/src-tauri/target/release/bundle/

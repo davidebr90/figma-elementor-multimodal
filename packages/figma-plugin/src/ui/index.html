@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><title>FEM Private Import</title></head>
+  <style>
+    body { font: 12px Inter, sans-serif; margin: 20px; color: #222; }
+    label { display: block; margin: 10px 0 4px; font-weight: 600; }
+    input { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; }
+    select { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; background: #fff; }
+    button { margin-top: 14px; padding: 9px 12px; border: 0; border-radius: 4px; cursor: pointer; }
+    .hint { margin: 4px 0 0; color: #666; font-size: 11px; }
+    .section { font-size: 13px; margin: 20px 0 2px; }
+    #outline { max-height: 220px; overflow: auto; border: 1px solid #eee; border-radius: 4px; margin-top: 8px; }
+    .row { display: flex; align-items: center; gap: 6px; padding: 3px 6px; border-bottom: 1px solid #f4f4f4; }
+    .row:last-child { border-bottom: 0; }
+    .row .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row select { width: 118px; padding: 2px 4px; font-size: 11px; }
+    .badge { font-size: 9px; padding: 1px 4px; border-radius: 6px; background: #eee; color: #666; }
+    .badge.override { background: #18a0fb; color: #fff; }
+    .badge.name { background: #d8f0dd; color: #1c6b2e; }
+    #connect { background: #18a0fb; color: white; } #export { background: #eee; }
+    /* Sticky, so the outcome stays visible no matter how far the panel is scrolled. */
+    #status { position: sticky; top: 0; z-index: 2; margin: 0 -20px 8px; padding: 10px 20px;
+              min-height: 17px; line-height: 17px; background: #f3f3f3; border-bottom: 1px solid #e4e4e4; }
+    #status.ok   { background: #e6f7ec; border-bottom-color: #bfe6cd; color: #0a7a3d; }
+    #status.err  { background: #fdecec; border-bottom-color: #f5c9c6; color: #b3261e; }
+    #status.busy { background: #eef4fb; border-bottom-color: #cfe0f5; color: #1c5fa8; }
+    button:disabled { opacity: .5; cursor: progress; }
+  </style>
+  <style>
+    :root { --fem-navy:#172b44; --fem-magenta:#d50072; --fem-blue:#2f6bff; --fem-orange:#ff5a3d; --fem-muted:#6b7688; }
+    body { background: linear-gradient(180deg,#f8fbff 0%,#fff 38%); color:var(--fem-navy); }
+    h1 { font-size:20px; letter-spacing:-.02em; margin:12px 0 18px; }
+    h2.section { color:var(--fem-navy); border-top:1px solid #e6ebf2; padding-top:16px; }
+    main > p:first-child { border-radius:10px; }
+    label { color:#223553; }
+    input, select { border-color:#cbd5e1; box-shadow:0 1px 2px rgba(23,43,68,.04); transition:border-color .15s, box-shadow .15s; }
+    input:focus, select:focus { outline:none; border-color:var(--fem-blue); box-shadow:0 0 0 3px rgba(47,107,255,.14); }
+    button { font-weight:600; transition:transform .12s, box-shadow .12s, background .12s; }
+    button:not(:disabled):hover { transform:translateY(-1px); box-shadow:0 3px 10px rgba(23,43,68,.12); }
+    #connect { background:linear-gradient(135deg,var(--fem-blue),#1553dc); width:100%; }
+    #export { background:linear-gradient(135deg,var(--fem-magenta),#b40060); color:#fff; width:100%; }
+    #sync-ds { background:#eef2f8; color:var(--fem-navy); width:100%; }
+    #outline { background:#fff; box-shadow:0 2px 10px rgba(23,43,68,.06); }
+    .responsive-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    .capture-responsive { margin-top:8px; padding:7px 4px; background:#eef2f8; color:var(--fem-navy); font-size:11px; }
+    .hint { color:var(--fem-muted); line-height:1.45; }
+    .badge.override { background:var(--fem-magenta); }
+  </style>
+  <body>
+    <main>
+      <p id="status">Enter the WordPress URL and one-time pairing details.</p>
+      <h1>FEM Private Import</h1>
+      <label for="base-url">WordPress URL</label>
+      <input id="base-url" type="url" placeholder="https://example.com">
+      <label for="pairing-id">Pairing ID</label>
+      <input id="pairing-id" type="text" autocomplete="off">
+      <label for="pairing-code">Pairing code</label>
+      <input id="pairing-code" type="text" autocomplete="off">
+      <button id="connect" type="button">Connect to WordPress</button>
+      <label for="page">WordPress page</label>
+      <select id="page" disabled>
+        <option value="">Connect first…</option>
+      </select>
+      <label for="render-target">Output editor</label>
+      <select id="render-target" disabled><option value="elementor">Elementor</option><option value="wordpress-blocks">WordPress Blocks</option></select>
+      <p class="hint">Choose which editor receives this Figma selection. Both outputs keep FEM identity metadata.</p>
+      <h2 class="section">Layer mapping</h2>
+      <p class="hint">Auto choices are guesses. Anything you set here is saved on the Figma layer and reused on every import.</p>
+      <div id="outline"><p class="hint">Select a frame on the canvas.</p></div>
+      <button id="export" type="button" disabled>Import selection</button>
+      <button id="sync-ds" type="button" disabled>Sync design system</button>
+      <h2 class="section">Responsive variants <span class="badge">optional</span></h2>
+      <p class="hint">Select the matching block on the canvas, capture Desktop, Tablet and Mobile, then import. Skip this section to use automatic responsive rules.</p>
+      <div class="responsive-actions"><button class="capture-responsive" data-viewport="desktop" type="button">Capture desktop</button><button class="capture-responsive" data-viewport="tablet" type="button">Capture tablet</button><button class="capture-responsive" data-viewport="mobile" type="button">Capture mobile</button></div>
+      <p id="responsive-status" class="hint">No explicit variants captured.</p>
+      <button id="clear-responsive" type="button">Clear variants / automatic import</button>
+      <p class="hint">Sends Figma colour variables and text styles to Elementor global colours and fonts.</p>
+    </main>
+    <script>
+      const status = document.querySelector('#status');
+      const exportButton = document.querySelector('#export');
+      const connectButton = document.querySelector('#connect');
+      const pageSelect = document.querySelector('#page');
+      const renderTarget = document.querySelector('#render-target');
+      const syncButton = document.querySelector('#sync-ds');
+      const outline = document.querySelector('#outline');
+      const responsiveStatus = document.querySelector('#responsive-status');
+      const capturedViewports = new Set();
+      document.querySelector('#clear-responsive').addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'clear-responsive' } }, '*'));
+      let connected = false;
+
+      function setStatus(text, kind) {
+        status.textContent = text;
+        status.className = kind || '';
+      }
+
+      // While an operation runs every button is locked, so a second click cannot
+      // start a duplicate import.
+      function setBusy(busy) {
+        for (const button of [connectButton, exportButton, syncButton]) button.disabled = busy;
+        renderTarget.disabled = busy || !connected;
+        if (!busy) {
+          exportButton.disabled = !connected;
+          syncButton.disabled = !connected;
+        }
+      }
+      connectButton.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'connect', config: { baseUrl: document.querySelector('#base-url').value, pairingId: document.querySelector('#pairing-id').value, code: document.querySelector('#pairing-code').value } } }, '*'));
+      exportButton.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'import-selection', pageId: pageSelect.value || null, target: renderTarget.value } }, '*'));
+      document.querySelectorAll('.capture-responsive').forEach((button) => button.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'capture-responsive', viewport: button.dataset.viewport } }, '*')));
+      syncButton.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'sync-design-system' } }, '*'));
+      const WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'icon', 'divider', 'spacer', 'skip'];
+
+      function renderOutline(items) {
+        outline.innerHTML = '';
+        if (!items.length) {
+          outline.innerHTML = '<p class="hint">Select a frame on the canvas.</p>';
+          return;
+        }
+        for (const item of items) {
+          const row = document.createElement('div');
+          row.className = 'row';
+
+          const label = document.createElement('span');
+          label.className = 'label';
+          label.style.paddingLeft = (item.depth * 10) + 'px';
+          label.textContent = item.name || item.type;
+          label.title = item.type;
+
+          const badge = document.createElement('span');
+          badge.className = 'badge ' + item.source;
+          badge.textContent = item.source === 'override' ? 'set' : (item.source === 'name' ? 'name' : 'auto');
+
+          const select = document.createElement('select');
+          const auto = document.createElement('option');
+          auto.value = '';
+          auto.textContent = 'Auto (' + item.widget + ')';
+          select.appendChild(auto);
+          for (const widget of WIDGETS) {
+            const option = document.createElement('option');
+            option.value = widget;
+            option.textContent = widget;
+            if (item.source === 'override' && item.widget === widget) option.selected = true;
+            select.appendChild(option);
+          }
+          select.addEventListener('change', () => parent.postMessage({ pluginMessage: { type: 'set-widget', nodeId: item.nodeId, widget: select.value } }, '*'));
+
+          row.append(label, badge, select);
+          outline.appendChild(row);
+        }
+      }
+
+      onmessage = (event) => {
+        const message = event.data.pluginMessage;
+        if (!message) return;
+        if (message.type === 'outline') renderOutline(message.items || []);
+        if (message.type === 'pages') {
+          const pages = message.pages || [];
+          // The list is refreshed after every import; keep the chosen page selected
+          // instead of silently falling back to "no page".
+          const previous = pageSelect.value;
+          pageSelect.innerHTML = '';
+          const none = document.createElement('option');
+          none.value = '';
+          none.textContent = pages.length ? 'Choose a page…' : 'No editable page found';
+          pageSelect.appendChild(none);
+          for (const page of pages) {
+            const option = document.createElement('option');
+            option.value = String(page.id);
+            option.textContent = page.title || `#${page.id}`;
+            if (page.status !== 'publish') option.textContent += ` (${page.status})`;
+            if (page.designId) option.textContent += ' ✓';
+            pageSelect.appendChild(option);
+          }
+          pageSelect.disabled = pages.length === 0;
+          renderTarget.disabled = pages.length === 0 || !connected;
+          if (previous && pages.some((page) => String(page.id) === previous)) pageSelect.value = previous;
+        }
+        if (message.type === 'busy') setBusy(message.busy);
+        if (message.type === 'responsive-captured') {
+          capturedViewports.add(message.viewport);
+          responsiveStatus.textContent = `Captured: ${[...capturedViewports].join(', ')}. Desktop is the import source when captured. Keep child layer names unique and consistent across variants.`;
+        }
+        if (message.type === 'responsive-cleared') {
+          capturedViewports.clear();
+          responsiveStatus.textContent = 'Automatic import: current selection, no captured variants.';
+        }
+        if (message.type === 'status') {
+          setStatus(message.message, message.error ? 'err' : (message.done ? 'ok' : 'busy'));
+        }
+        if (message.type === 'connected' || message.type === 'saved-connection') {
+          document.getElementById('base-url').value = message.baseUrl;
+          document.getElementById('pairing-id').value = '';
+          document.getElementById('pairing-code').value = '';
+          connected = true;
+          exportButton.disabled = false;
+          syncButton.disabled = false;
+          if (message.expiresAt) {
+            const expiry = new Date(message.expiresAt);
+            setStatus(`Connected to ${message.baseUrl} until ${expiry.toLocaleString()}.`, 'ok');
+          } else if (message.type === 'saved-connection') setStatus(`Connected to ${message.baseUrl}.`, 'ok');
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+name: fem-isolated-test
+services:
+  database:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: fem_test
+      MARIADB_USER: fem_test
+      MARIADB_PASSWORD: fem-disposable-local-test
+      MARIADB_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - fem_database:/var/lib/mysql
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  wordpress:
+    image: wordpress:php8.3-apache
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:8096:80'
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: fem_test
+      WORDPRESS_DB_USER: fem_test
+      WORDPRESS_DB_PASSWORD: fem-disposable-local-test
+      WORDPRESS_DEBUG: '1'
+    volumes:
+      - fem_wordpress:/var/www/html
+      - ./packages/wordpress-plugin:/var/www/html/wp-content/plugins/figma-elementor-multimodal:ro
+      - ./.runtime/elementor:/var/www/html/wp-content/plugins/elementor:ro
+volumes:
+  fem_database:
+  fem_wordpress:

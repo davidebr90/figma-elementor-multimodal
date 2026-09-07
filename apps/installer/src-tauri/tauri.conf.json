@@ -1,0 +1,29 @@
+{
+  "productName": "FEM Setup",
+  "version": "0.1.0",
+  "identifier": "com.fem.setup",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "FEM Setup",
+        "width": 1000,
+        "height": 760,
+        "minWidth": 740,
+        "minHeight": 600
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self'; connect-src ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
+  }
+}

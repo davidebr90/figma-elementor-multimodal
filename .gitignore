@@ -1,0 +1,10 @@
+tools/composer.phar
+.runtime/
+**/vendor/
+**/node_modules/
+**/.phpunit.cache/
+**/target/
+**/dist/
+**/gen/schemas/
+docs/superpowers/
+dist/
