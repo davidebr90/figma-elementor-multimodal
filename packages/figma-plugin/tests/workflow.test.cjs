@@ -168,4 +168,9 @@ test('capability negotiation selects v1.1 only when WordPress advertises it', as
   context.figma.currentPage.selection = [{ id: 'negotiated-root', name: 'Hero', type: 'FRAME', children: [], layoutMode: 'VERTICAL', width: 100, height: 100 }];
   const result = await vm.runInContext('extractSelection(figma.currentPage.selection)', context);
   assert.equal(result.document.schemaVersion, '1.1.0');
+  assert.deepEqual(Array.from(result.document.responsive.viewports), ['desktop', 'tablet', 'mobile']);
+  assert.deepEqual(Object.fromEntries(Object.entries(result.document.styles.tokens)), {});
+  assert.equal(result.document.bindings.length, 1);
+  assert.equal(result.document.bindings[0].ownership, 'figma');
+  assert.match(result.document.bindings[0].sourceHash, /^[a-f0-9]{64}$/);
 });

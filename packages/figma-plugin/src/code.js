@@ -471,7 +471,18 @@ async function extractSelection(selection) {
     item.payload = globalThis.__femImagePayload ? globalThis.__femImagePayload(sha256, bytes) : { sha256, mime: 'image/png', bytes };
   }
   const revision = uuid();
-  const document = { kind: 'fem.document', schemaVersion: negotiatedSchemaVersion, source: { provider: 'figma', identity: `figma:${fileKey}:${selection[0].id}`, rootNodeId: selection[0].id, fileKey }, roots, nodes, assets, tokens: {}, editables: [], capabilities, warnings, unsupported: [], revisions: { figmaRevision: revision, wordpressRevision: 0, commonBaseRevision: revision }, integrity: { algorithm: 'sha256-jcs', contentHash: '0'.repeat(64) } };
+  const v11Metadata = negotiatedSchemaVersion === '1.1.0' ? {
+    styles: { tokens: {} },
+    responsive: { viewports: ['desktop', 'tablet', 'mobile'] },
+    bindings: await Promise.all(Object.values(nodes).map(async (node) => ({
+      figmaNodeId: node.sourceNodeId,
+      femNodeId: node.id,
+      propertyPath: 'node',
+      ownership: 'figma',
+      sourceHash: await digest(utf8Bytes(stable(node))),
+    }))),
+  } : {};
+  const document = { kind: 'fem.document', schemaVersion: negotiatedSchemaVersion, source: { provider: 'figma', identity: `figma:${fileKey}:${selection[0].id}`, rootNodeId: selection[0].id, fileKey }, roots, nodes, assets, tokens: {}, editables: [], capabilities, warnings, unsupported: [], ...v11Metadata, revisions: { figmaRevision: revision, wordpressRevision: 0, commonBaseRevision: revision }, integrity: { algorithm: 'sha256-jcs', contentHash: '0'.repeat(64) } };
   document.integrity.contentHash = await digest(utf8Bytes(stable(document)));
   return { document, assetPayloads: assetPayloads.map((item) => item.payload).filter(Boolean) };
 }

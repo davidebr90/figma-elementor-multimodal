@@ -83,3 +83,10 @@
 - Figma negotiates v1.1 only when WordPress advertises it; failed or missing negotiation falls back to v1.0.
 - Advertised targets remain Elementor and Gutenberg; reverse sync is not advertised.
 - Figma tests: PASS — 26 tests, 0 failures.
+
+## Task 4C — 2026-09-07
+
+- Figma emits v1.1 metadata only after successful negotiation: empty style tokens, canonical viewport list and read-only node bindings.
+- Each binding carries the source node, FEM node, `node` property, `figma` ownership and a SHA-256 source hash.
+- v1.0 output remains unchanged when negotiation is unavailable.
+- Figma tests: PASS — 26 tests, 0 failures; bundle syntax check passed.
