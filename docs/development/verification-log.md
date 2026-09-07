@@ -126,3 +126,4 @@
 - Elementor element trees are structurally validated before append/replace persistence; malformed incoming or existing nodes are rejected.
 - REST Elementor imports now fail explicitly with `elementor-unavailable` when Elementor is missing or below the supported minimum, instead of writing unusable metadata.
 - When Elementor is present, the writer now requires its document API and never silently falls back to direct meta writes if that API is unavailable.
+- Added a Windows runtime preflight that fails early when Docker or the authorized Elementor package is unavailable.
