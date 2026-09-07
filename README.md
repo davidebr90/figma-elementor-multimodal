@@ -1,6 +1,8 @@
 # Figma Elementor Multimodal
 
-![Figma Elementor Multimodal](assets/brand/fem-logo-primary.png)
+<p align="center">
+  <img src="assets/brand/fem-logo-primary.png" alt="Figma Elementor Multimodal" width="360">
+</p>
 
 Figma Elementor Multimodal (FEM) is an open-source, self-hosted bridge for bringing a Figma selection into WordPress as editable Elementor elements or native Gutenberg blocks.
 
