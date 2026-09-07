@@ -126,4 +126,15 @@
 - Elementor element trees are structurally validated before append/replace persistence; malformed incoming or existing nodes are rejected.
 - REST Elementor imports now fail explicitly with `elementor-unavailable` when Elementor is missing or below the supported minimum, instead of writing unusable metadata.
 - When Elementor is present, the writer now requires its document API and never silently falls back to direct meta writes if that API is unavailable.
+
+## Runtime smoke tests — 2026-09-07
+
+- Docker Desktop + WordPress 6.x/7.x runtime stack: PASS — MariaDB healthy and WordPress available on the isolated loopback port.
+- Elementor runtime: PASS — official free Elementor 4.2.4 loaded and active.
+- Pairing and credential exchange: PASS — REST pairing, expiry and requested scopes verified.
+- FEM staging and commit: PASS — schema 1.1 snapshot persisted with zero missing assets.
+- Elementor import: PASS — native container written through Elementor's Document API.
+- Gutenberg import: PASS — native `core/group` content persisted with FEM identity classes.
+- Elementor append/replace/idempotency: PASS — append preserves unique IDs, replace leaves one top-level element, repeated commit returns the same snapshot.
+- Schema recovery: PASS — forcing an obsolete schema version triggers automatic idempotent migration during bootstrap.
 - Added a Windows runtime preflight that fails early when Docker or the authorized Elementor package is unavailable.
