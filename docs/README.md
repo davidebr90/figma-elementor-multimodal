@@ -1,6 +1,6 @@
 # Documentazione italiana
 
-FEM è in beta: usare prima un sito di staging e verificare sempre l’output prima di pubblicare.
+FEM è in beta: usare prima un sito di staging e verificare sempre l’output prima di pubblicare. Consultare il [changelog](../CHANGELOG.md) e la [checklist di release](RELEASE-CHECKLIST.md).
 
 - [Installazione e primo collegamento](INSTALLAZIONE.md)
 - [Configurazione WordPress](WORDPRESS.md)

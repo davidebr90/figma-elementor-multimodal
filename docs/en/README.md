@@ -1,6 +1,6 @@
 # English documentation
 
-FEM is beta software. Use a staging website first and review every imported page before publishing.
+FEM is beta software. Use a staging website first and review every imported page before publishing. See the [changelog](../../CHANGELOG.md) and [release checklist](../RELEASE-CHECKLIST.md).
 
 - [Installation and first connection](INSTALLATION.md)
 - [WordPress configuration](WORDPRESS.md)
