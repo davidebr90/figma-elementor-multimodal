@@ -24,17 +24,22 @@ final class DocumentWriter
         $elements = $replace ? $elements : $this->avoidIdCollisions($tree, $elements);
         $tree = array_merge($tree, $elements);
 
-        if (class_exists('Elementor\\Plugin') && isset(\Elementor\Plugin::$instance->documents)) {
-            $document = \Elementor\Plugin::$instance->documents->get($pageId);
-            if (is_object($document) && method_exists($document, 'save')) {
-                $this->users->runAs($userId, static function () use ($document, $tree): void {
-                    if ($document->save(['elements' => $tree]) === false) {
-                        throw new \RuntimeException('Elementor refused to save the document for the paired user.');
-                    }
-                });
-                $this->clearCache();
-                return count($tree);
+        if (class_exists('Elementor\\Plugin')) {
+            $plugin = \Elementor\Plugin::$instance ?? null;
+            if (!is_object($plugin) || !isset($plugin->documents) || !is_object($plugin->documents)) {
+                throw new \RuntimeException('Elementor document API is unavailable.');
             }
+            $document = $plugin->documents->get($pageId);
+            if (!is_object($document) || !method_exists($document, 'save')) {
+                throw new \RuntimeException('Elementor document could not be opened.');
+            }
+            $this->users->runAs($userId, static function () use ($document, $tree): void {
+                if ($document->save(['elements' => $tree]) === false) {
+                    throw new \RuntimeException('Elementor refused to save the document for the paired user.');
+                }
+            });
+            $this->clearCache();
+            return count($tree);
         }
 
         $encoded = wp_json_encode($tree);
