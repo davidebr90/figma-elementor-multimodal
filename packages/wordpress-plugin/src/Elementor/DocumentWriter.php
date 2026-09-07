@@ -17,7 +17,7 @@ final class DocumentWriter
     public function write(int $pageId, array $elements, bool $replace, int $userId = 0): int
     {
         $existing = get_post_meta($pageId, '_elementor_data', true);
-        $tree = is_string($existing) ? json_decode($existing, true) : $existing;
+        $tree = $this->decodeExisting($existing, $replace);
         $tree = is_array($tree) && !$replace ? $tree : [];
         $tree = array_merge($tree, $elements);
 
@@ -41,6 +41,29 @@ final class DocumentWriter
         }
         $this->clearCache();
         return count($tree);
+    }
+
+    /** @return array<mixed>|null */
+    private function decodeExisting(mixed $existing, bool $replace): ?array
+    {
+        if ($replace || $existing === '' || $existing === null) {
+            return null;
+        }
+        if (is_array($existing)) {
+            return $existing;
+        }
+        if (!is_string($existing)) {
+            throw new \RuntimeException('Elementor document data has an unsupported format.');
+        }
+        try {
+            $decoded = json_decode($existing, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new \RuntimeException('Elementor document data is not valid JSON.');
+        }
+        if (!is_array($decoded)) {
+            throw new \RuntimeException('Elementor document data must be a JSON array.');
+        }
+        return $decoded;
     }
 
     private function clearCache(): void
