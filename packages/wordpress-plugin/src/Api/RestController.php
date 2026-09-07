@@ -54,6 +54,7 @@ final class RestController
         register_rest_route(self::NAMESPACE, '/imports/(?P<importId>[a-f0-9]{32})/commit', ['methods' => 'POST', 'callback' => [$this, 'commit'], 'permission_callback' => [$this, 'requireBearer']]);
         register_rest_route(self::NAMESPACE, '/imports/(?P<importId>[a-f0-9]{32})', ['methods' => 'GET', 'callback' => [$this, 'status'], 'permission_callback' => [$this, 'requireBearer']]);
         register_rest_route(self::NAMESPACE, '/pages', ['methods' => 'GET', 'callback' => [$this, 'pages'], 'permission_callback' => [$this, 'requireBearer']]);
+        register_rest_route(self::NAMESPACE, '/capabilities', ['methods' => 'GET', 'callback' => [$this, 'capabilities'], 'permission_callback' => [$this, 'requireBearer']]);
         register_rest_route(self::NAMESPACE, '/pages/(?P<pageId>[0-9]+)/design', ['methods' => 'POST', 'callback' => [$this, 'attachDesign'], 'permission_callback' => [$this, 'requireBearer'], 'args' => ['pageId' => ['required' => true, 'sanitize_callback' => 'absint']]]);
         register_rest_route(self::NAMESPACE, '/design-system', ['methods' => 'POST', 'callback' => [$this, 'syncDesignSystem'], 'permission_callback' => [$this, 'requireBearer']]);
         register_rest_route(self::NAMESPACE, '/pages/(?P<pageId>[0-9]+)/elementor', ['methods' => 'POST', 'callback' => [$this, 'transpileToPage'], 'permission_callback' => [$this, 'requireBearer'], 'args' => ['pageId' => ['required' => true, 'sanitize_callback' => 'absint']]]);
@@ -276,6 +277,12 @@ final class RestController
         } catch (PairingException) {
             return $this->responses->error(401, 'invalid-credential', 'Authentication failed.', $requestId);
         }
+    }
+
+    /** Returns the import contract so clients can select a compatible IR version. */
+    public function capabilities(object $request): array
+    {
+        return $this->responses->success(CapabilityContract::advertised(), $this->requestId($request));
     }
 
     /** Remembers which design a page renders, so the Elementor widget needs no manual ID. */

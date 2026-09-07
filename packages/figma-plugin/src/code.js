@@ -5,6 +5,7 @@ const NETWORK_TIMEOUT_MS = 20000;
 let renewalPromise = null;
 const scopes = ['import:write', 'asset:write', 'changes:read', 'changes:ack'];
 const responsiveDraft = { desktop: null, tablet: null, mobile: null };
+let negotiatedSchemaVersion = '1.0.0';
 const nodeTypes = { FRAME: 'frame', SECTION: 'section', GROUP: 'group', TEXT: 'text', RECTANGLE: 'rectangle', ELLIPSE: 'ellipse', LINE: 'line', VECTOR: 'vector', BOOLEAN_OPERATION: 'boolean_operation', COMPONENT: 'component', COMPONENT_SET: 'component_set', INSTANCE: 'instance', IMAGE: 'image' };
 
 const post = (message, extra = {}) => figma.ui.postMessage({ type: 'status', message, ...extra });
@@ -470,7 +471,7 @@ async function extractSelection(selection) {
     item.payload = globalThis.__femImagePayload ? globalThis.__femImagePayload(sha256, bytes) : { sha256, mime: 'image/png', bytes };
   }
   const revision = uuid();
-  const document = { kind: 'fem.document', schemaVersion: '1.0.0', source: { provider: 'figma', identity: `figma:${fileKey}:${selection[0].id}`, rootNodeId: selection[0].id, fileKey }, roots, nodes, assets, tokens: {}, editables: [], capabilities, warnings, unsupported: [], revisions: { figmaRevision: revision, wordpressRevision: 0, commonBaseRevision: revision }, integrity: { algorithm: 'sha256-jcs', contentHash: '0'.repeat(64) } };
+  const document = { kind: 'fem.document', schemaVersion: negotiatedSchemaVersion, source: { provider: 'figma', identity: `figma:${fileKey}:${selection[0].id}`, rootNodeId: selection[0].id, fileKey }, roots, nodes, assets, tokens: {}, editables: [], capabilities, warnings, unsupported: [], revisions: { figmaRevision: revision, wordpressRevision: 0, commonBaseRevision: revision }, integrity: { algorithm: 'sha256-jcs', contentHash: '0'.repeat(64) } };
   document.integrity.contentHash = await digest(utf8Bytes(stable(document)));
   return { document, assetPayloads: assetPayloads.map((item) => item.payload).filter(Boolean) };
 }
@@ -482,6 +483,7 @@ async function connect(config) {
   await figma.clientStorage.setAsync(STORAGE_KEY, { baseUrl, credential: data.deviceCredential, expiresAt: data.expiresAt });
   figma.ui.postMessage({ type: 'connected', baseUrl, expiresAt: data.expiresAt });
   announce('Connected to WordPress. Choose a page, select a frame, then Import selection.');
+  await negotiateCapabilities();
   await loadPages();
 }
 
@@ -628,6 +630,18 @@ async function loadPages() {
     figma.ui.postMessage({ type: 'pages', pages: data.pages || [] });
   } catch (error) {
     figma.ui.postMessage({ type: 'pages', pages: [] });
+  }
+}
+
+async function negotiateCapabilities() {
+  const connection = await figma.clientStorage.getAsync(STORAGE_KEY);
+  if (!connection?.baseUrl || !connection?.credential) return;
+  try {
+    const data = await request(connection.baseUrl, connection.credential, '/index.php?rest_route=/figma-elementor-multimodal/v1/capabilities');
+    negotiatedSchemaVersion = Array.isArray(data.supportedSchemaVersions) && data.supportedSchemaVersions.includes('1.1.0') ? '1.1.0' : '1.0.0';
+    figma.ui.postMessage({ type: 'capabilities', capabilities: data, schemaVersion: negotiatedSchemaVersion });
+  } catch (error) {
+    negotiatedSchemaVersion = '1.0.0';
   }
 }
 

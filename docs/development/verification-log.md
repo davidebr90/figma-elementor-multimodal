@@ -76,3 +76,10 @@
 - Added bounded validation for optional `styles`, `responsive` and `bindings` metadata.
 - Binding validation checks ownership, source hash, reachable FEM node and duplicate property mappings.
 - Schema validator tests: PASS — 6 tests, 12 assertions.
+
+## Task 4B — 2026-09-07
+
+- Added authenticated `/capabilities` endpoint.
+- Figma negotiates v1.1 only when WordPress advertises it; failed or missing negotiation falls back to v1.0.
+- Advertised targets remain Elementor and Gutenberg; reverse sync is not advertised.
+- Figma tests: PASS — 26 tests, 0 failures.

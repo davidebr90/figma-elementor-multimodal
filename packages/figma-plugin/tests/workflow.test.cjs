@@ -153,10 +153,19 @@ test('missing destination is rejected before extraction or staging', async () =>
 });
 
 for (const baseUrl of ['http://localhost:8096', 'http://127.0.0.1:8096', 'http://[::1]:8096', 'http://localhost:8096/wp']) {
-  test('pairing reaches the configured loopback site: ' + baseUrl, async () => {
+test('pairing reaches the configured loopback site: ' + baseUrl, async () => {
     const {context,calls}=harness();
     context.connectionConfig={baseUrl,pairingId:'test-id',code:'test-code'};
     await vm.runInContext('connect(connectionConfig)',context);
     assert.ok(calls.some(call=>call.url===baseUrl+'/index.php?rest_route=/figma-elementor-multimodal/v1/pairings/exchange'));
-  });
+});
 }
+
+test('capability negotiation selects v1.1 only when WordPress advertises it', async () => {
+  const { context } = harness(async (url) => ({ ok: true, json: async () => ({ success: true, data: url.endsWith('/capabilities') ? { supportedSchemaVersions: ['1.0.0', '1.1.0'] } : { deviceCredential: 'credential', expiresAt: '2030-01-01T00:00:00Z' } }) }));
+  context.connectionConfig = { baseUrl: 'https://example.test', pairingId: 'pairing-id', code: 'pairing-code' };
+  await vm.runInContext('connect(connectionConfig)', context);
+  context.figma.currentPage.selection = [{ id: 'negotiated-root', name: 'Hero', type: 'FRAME', children: [], layoutMode: 'VERTICAL', width: 100, height: 100 }];
+  const result = await vm.runInContext('extractSelection(figma.currentPage.selection)', context);
+  assert.equal(result.document.schemaVersion, '1.1.0');
+});
