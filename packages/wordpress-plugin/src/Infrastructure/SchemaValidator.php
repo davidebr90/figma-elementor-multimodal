@@ -8,6 +8,8 @@ namespace FEM\Infrastructure;
 final class SchemaValidator
 {
     public const SUPPORTED_SCHEMA_VERSION = '1.0.0';
+    /** @var list<string> */
+    private const SUPPORTED_SCHEMA_VERSIONS = ['1.0.0', '1.1.0'];
 
     /** @var list<string> */
     private const ALLOWED_WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'icon', 'divider', 'spacer'];
@@ -18,7 +20,7 @@ final class SchemaValidator
         if (($document['kind'] ?? null) !== 'fem.document') {
             throw new \InvalidArgumentException('Unsupported FEM document kind.');
         }
-        if (($document['schemaVersion'] ?? null) !== self::SUPPORTED_SCHEMA_VERSION) {
+        if (!in_array($document['schemaVersion'] ?? null, self::SUPPORTED_SCHEMA_VERSIONS, true)) {
             throw new \InvalidArgumentException('Unsupported FEM schema version.');
         }
     }
@@ -44,6 +46,7 @@ final class SchemaValidator
         if (!is_array($document['assets']) || count($document['assets']) > 2000 || !is_array($document['editables']) || !is_array($document['capabilities'])) {
             throw new \InvalidArgumentException('FEM asset count exceeds the limit.');
         }
+        $this->assertAdditiveV11Metadata($document);
         $capabilities = $document['capabilities'];
         $capabilityKeys = [];
         foreach ($capabilities as $capability) {
@@ -95,6 +98,7 @@ final class SchemaValidator
         if (count($reachable) !== count($nodes)) {
             throw new \InvalidArgumentException('FEM document contains unreachable nodes.');
         }
+        $this->assertV11Bindings($document, $reachable);
         foreach ($document['editables'] as $editable) {
             if (!is_array($editable) || !is_string($editable['nodeId'] ?? null) || !isset($reachable[$editable['nodeId']])) {
                 throw new \InvalidArgumentException('FEM editable references an unknown node.');
@@ -113,6 +117,41 @@ final class SchemaValidator
         }
         if (!hash_equals((string) $integrity['contentHash'], DocumentIntegrity::contentHash($document))) {
             throw new \InvalidArgumentException('FEM document integrity does not match its content.');
+        }
+    }
+
+    /** @param array<string,mixed> $document */
+    private function assertAdditiveV11Metadata(array $document): void
+    {
+        if (($document['schemaVersion'] ?? null) !== '1.1.0') {
+            return;
+        }
+        foreach (['styles', 'responsive'] as $field) {
+            if (array_key_exists($field, $document) && !is_array($document[$field])) {
+                throw new \InvalidArgumentException('FEM v1.1 ' . $field . ' metadata must be an object.');
+            }
+        }
+        if (isset($document['bindings']) && (!is_array($document['bindings']) || !array_is_list($document['bindings']) || count($document['bindings']) > 10000)) {
+            throw new \InvalidArgumentException('FEM v1.1 bindings metadata is invalid.');
+        }
+    }
+
+    /** @param array<string,mixed> $document @param array<string,bool> $reachable */
+    private function assertV11Bindings(array $document, array $reachable): void
+    {
+        if (($document['schemaVersion'] ?? null) !== '1.1.0' || !isset($document['bindings'])) {
+            return;
+        }
+        $seen = [];
+        foreach ($document['bindings'] as $binding) {
+            if (!is_array($binding) || !is_string($binding['figmaNodeId'] ?? null) || !is_string($binding['femNodeId'] ?? null) || !isset($reachable[$binding['femNodeId']]) || !is_string($binding['propertyPath'] ?? null) || $binding['propertyPath'] === '' || !in_array($binding['ownership'] ?? null, ['figma', 'wordpress', 'shared'], true) || !preg_match('/^[a-f0-9]{64}$/', (string) ($binding['sourceHash'] ?? ''))) {
+                throw new \InvalidArgumentException('FEM v1.1 binding is invalid.');
+            }
+            $key = $binding['figmaNodeId'] . '|' . $binding['propertyPath'];
+            if (isset($seen[$key])) {
+                throw new \InvalidArgumentException('FEM v1.1 bindings contain a duplicate property mapping.');
+            }
+            $seen[$key] = true;
         }
     }
 }

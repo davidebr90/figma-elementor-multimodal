@@ -1,0 +1,15 @@
+{
+  "kind": "fem.document",
+  "schemaVersion": "1.1.0",
+  "source": {"provider": "figma", "identity": "test-file:v11"},
+  "roots": ["root"],
+  "nodes": {"root": {"id": "root", "widget": "container", "children": [], "layout": {"width": 640, "height": 240}}},
+  "assets": {},
+  "editables": [],
+  "capabilities": [],
+  "styles": {"tokens": {"space-md": "16px"}},
+  "responsive": {"breakpoints": {"tablet": 1024, "mobile": 767}},
+  "bindings": [{"figmaNodeId": "root", "femNodeId": "root", "propertyPath": "node", "ownership": "figma", "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}],
+  "revisions": {"figmaRevision": "v11-1"},
+  "integrity": {"algorithm": "sha256-jcs", "contentHash": "c7e007676a96704bb97d8165baf750092afe54cfc6e6ed9044219291e3d6e4b2"}
+}

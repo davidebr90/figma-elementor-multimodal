@@ -69,3 +69,10 @@
 - Hardened both in-memory and WordPress asset stores against unsupported MIME types.
 - Direct calls can no longer bypass the PNG/JPEG allowlist and fall back to an unsafe `.bin` upload.
 - Targeted PHPUnit: PASS — 1 test, 2 assertions; PHPStan and PHPCS: PASS.
+
+## Task 4A — 2026-09-07
+
+- Added additive FEM schema `1.1.0` acceptance while preserving `1.0.0`.
+- Added bounded validation for optional `styles`, `responsive` and `bindings` metadata.
+- Binding validation checks ownership, source hash, reachable FEM node and duplicate property mappings.
+- Schema validator tests: PASS — 6 tests, 12 assertions.

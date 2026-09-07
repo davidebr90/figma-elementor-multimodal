@@ -54,6 +54,27 @@ final class SchemaValidatorTest extends TestCase
         self::assertFalse($document['nodes']['heading']['responsive']['mobile']['visible']);
     }
 
+    public function testV11AcceptsOnlyAdditiveStructuredMetadata(): void
+    {
+        /** @var array<string,mixed> $document */
+        $document = json_decode((string) file_get_contents(__DIR__ . '/../fixtures/valid-v11.json'), true, 512, JSON_THROW_ON_ERROR);
+
+        (new SchemaValidator())->assertValid($document);
+        self::assertSame('1.1.0', $document['schemaVersion']);
+        self::assertSame('node', $document['bindings'][0]['propertyPath']);
+    }
+
+    public function testV11RejectsDuplicateBindingPropertyMappings(): void
+    {
+        /** @var array<string,mixed> $document */
+        $document = json_decode((string) file_get_contents(__DIR__ . '/../fixtures/valid-v11.json'), true, 512, JSON_THROW_ON_ERROR);
+        $document['bindings'][] = $document['bindings'][0];
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+
+        $this->expectExceptionMessage('duplicate property mapping');
+        (new SchemaValidator())->assertValid($document);
+    }
+
     /** @return array<string,mixed> */
     private function document(): array
     {
