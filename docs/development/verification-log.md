@@ -90,3 +90,9 @@
 - Each binding carries the source node, FEM node, `node` property, `figma` ownership and a SHA-256 source hash.
 - v1.0 output remains unchanged when negotiation is unavailable.
 - Figma tests: PASS — 26 tests, 0 failures; bundle syntax check passed.
+
+## Task 5A — 2026-09-07
+
+- Elementor now projects explicit tablet/mobile background, radius, border width and border color overrides.
+- Responsive colors accept only bounded hex/rgb/rgba syntax; arbitrary CSS is rejected.
+- Targeted Transpiler tests: PASS — 2 tests, 7 assertions; PHPStan and PHPCS: PASS.

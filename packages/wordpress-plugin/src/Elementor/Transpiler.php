@@ -487,7 +487,24 @@ final class Transpiler
             if (isset($values['gap']) && is_numeric($values['gap'])) {
                 $settings['flex_gap' . $suffix] = $this->gaps(['gap' => max(0, (int) $values['gap']), 'direction' => (string) ($values['direction'] ?? 'column')]);
             }
+            if (isset($values['background']) && is_string($values['background']) && $this->isSafeColor($values['background'])) {
+                $settings['background_color' . $suffix] = $values['background'];
+            }
+            if (isset($values['radius']) && is_numeric($values['radius'])) {
+                $settings['border_radius' . $suffix] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], max(0, min(999, (int) $values['radius']))), true);
+            }
+            if (isset($values['borderWidth']) && is_numeric($values['borderWidth'])) {
+                $settings['border_width' . $suffix] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], max(0, min(100, (int) $values['borderWidth']))), true);
+            }
+            if (isset($values['borderColor']) && is_string($values['borderColor']) && $this->isSafeColor($values['borderColor'])) {
+                $settings['border_color' . $suffix] = $values['borderColor'];
+            }
         }
+    }
+
+    private function isSafeColor(string $value): bool
+    {
+        return preg_match('/^(#[a-f0-9]{6}|rgba?\([0-9 .,]+\))$/i', trim($value)) === 1;
     }
 
     /**
