@@ -37,6 +37,7 @@ final class Plugin
             return;
         }
         self::$booted = true;
+        self::ensureSchema();
         self::scheduleAuditPrune();
         if (function_exists('add_action')) {
             add_action('fem_prune_audit', [self::class, 'pruneAudit']);
@@ -94,6 +95,17 @@ final class Plugin
         $database = new Database($GLOBALS['wpdb']);
         $imports = new ImportService(new SchemaValidator(), new WpAssetStore(), new WpImportStore($database), new WpDesignRepository($database), new WpSnapshotRepository($database), new WpIdempotencyRepository($database), new SystemClock(), new SystemRandomSource());
         (new RestController($pairing, $imports, new RequestLimits(), new ResponseFactory()))->register();
+    }
+
+    private static function ensureSchema(): void
+    {
+        if (!isset($GLOBALS['wpdb']) || !is_object($GLOBALS['wpdb']) || !function_exists('get_option')) {
+            return;
+        }
+        if ((string) get_option('fem_schema_version', '') === (string) Database::SCHEMA_VERSION) {
+            return;
+        }
+        (new Database($GLOBALS['wpdb']))->migrate();
     }
 
     public static function registerBlocks(): void
