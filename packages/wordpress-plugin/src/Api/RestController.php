@@ -340,6 +340,9 @@ final class RestController
             if (!in_array($target, ['elementor', 'wordpress-blocks'], true)) {
                 return $this->responses->error(422, 'invalid-render-target', 'Target must be elementor or wordpress-blocks.', $requestId);
             }
+            if ($target === 'elementor' && (!defined('ELEMENTOR_VERSION') || version_compare((string) ELEMENTOR_VERSION, \FEM\Plugin::MINIMUM_ELEMENTOR, '<'))) {
+                return $this->responses->error(409, 'elementor-unavailable', 'Elementor ' . \FEM\Plugin::MINIMUM_ELEMENTOR . ' or newer is required for this target.', $requestId);
+            }
             if ($target === 'wordpress-blocks') {
                 $written = (new \FEM\Blocks\BlockWriter())->write($pageId, $snapshot['document'], $replace);
                 return $this->responses->success(['pageId' => $pageId, 'target' => $target, 'mode' => $replace ? 'replace' : 'append', 'added' => $written['added'], 'totalTopLevel' => $written['total'], 'notes' => $written['notes']], $requestId);

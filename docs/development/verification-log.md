@@ -124,3 +124,4 @@
 - Writer tests: PASS — malformed JSON, replace, and collision-remap paths covered.
 - JSON persistence failure is now fail-closed; no empty `_elementor_data` value is written.
 - Elementor element trees are structurally validated before append/replace persistence; malformed incoming or existing nodes are rejected.
+- REST Elementor imports now fail explicitly with `elementor-unavailable` when Elementor is missing or below the supported minimum, instead of writing unusable metadata.
