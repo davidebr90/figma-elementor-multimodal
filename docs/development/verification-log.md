@@ -44,3 +44,9 @@
 - Figma extraction/helper tests: PASS — 20 tests, 0 failures, no warnings.
 - Bundle build and syntax check: PASS.
 - Integration scope: Elementor/WordPress code unchanged; installer still consumes the legacy-compatible source entry.
+
+## Task 3C — 2026-09-07
+
+- Extracted typography weight normalization into `packages/figma-plugin/src/extraction/typography.js`.
+- Legacy code retains a fallback and the production bundle uses the extracted helper through the bridge.
+- Figma tests: PASS — 21 tests, 0 failures; bundle syntax check passed.
