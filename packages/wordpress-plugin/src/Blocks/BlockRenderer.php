@@ -207,6 +207,11 @@ final class BlockRenderer
         if (isset($values['radius']) && is_numeric($values['radius'])) {
             $result['border']['radius'] = max(0, min(999, (int) $values['radius'])) . 'px';
         }
+        if (isset($values['borderWidth']) && is_numeric($values['borderWidth']) && isset($values['borderColor']) && is_string($values['borderColor']) && preg_match('/^#[a-f0-9]{6}$/i', $values['borderColor'])) {
+            $result['border']['width'] = max(0, min(100, (int) $values['borderWidth'])) . 'px';
+            $result['border']['color'] = strtolower($values['borderColor']);
+            $result['border']['style'] = 'solid';
+        }
         return $result;
     }
 

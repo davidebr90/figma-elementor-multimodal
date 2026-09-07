@@ -96,3 +96,9 @@
 - Elementor now projects explicit tablet/mobile background, radius, border width and border color overrides.
 - Responsive colors accept only bounded hex/rgb/rgba syntax; arbitrary CSS is rejected.
 - Targeted Transpiler tests: PASS — 2 tests, 7 assertions; PHPStan and PHPCS: PASS.
+
+## Task 5B — 2026-09-07
+
+- Gutenberg now projects responsive border width/color/style together with background and radius under `@tablet` / `@mobile` keys.
+- Values remain allowlisted and serialized as structured block style metadata.
+- Targeted BlockRenderer tests: PASS — 5 tests, 17 assertions; PHPStan and PHPCS: PASS.

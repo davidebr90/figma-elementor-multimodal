@@ -68,4 +68,23 @@ final class BlockRendererTest extends TestCase
         self::assertStringContainsString('"@mobile"', $result['content']);
         self::assertStringContainsString('Safe &amp; stable', $result['content']);
     }
+
+    public function testResponsivePaintAndBorderOverridesUseWordPressBreakpointKeys(): void
+    {
+        $result = (new BlockRenderer())->render(['roots' => ['root'], 'nodes' => [
+            'root' => [
+                'id' => 'root', 'widget' => 'container', 'children' => [],
+                'responsive' => ['mobile' => [
+                    'background' => '#112233', 'radius' => 18,
+                    'borderWidth' => 2, 'borderColor' => '#445566',
+                ]],
+            ],
+        ]]);
+
+        self::assertStringContainsString('"@mobile"', $result['content']);
+        self::assertStringContainsString('"background":"#112233"', $result['content']);
+        self::assertStringContainsString('"radius":"18px"', $result['content']);
+        self::assertStringContainsString('"width":"2px"', $result['content']);
+        self::assertStringContainsString('"color":"#445566"', $result['content']);
+    }
 }
