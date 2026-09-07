@@ -102,3 +102,10 @@
 - Gutenberg now projects responsive border width/color/style together with background and radius under `@tablet` / `@mobile` keys.
 - Values remain allowlisted and serialized as structured block style metadata.
 - Targeted BlockRenderer tests: PASS — 5 tests, 17 assertions; PHPStan and PHPCS: PASS.
+
+## Task 6A — 2026-09-07
+
+- Declared `femId`, `schemaVersion` and validated `sourceHash` attributes in the native `fem/scene` block metadata.
+- Server rendering now preserves these values as safe `data-fem-*` attributes for diagnostics and future editor tooling.
+- Invalid source hashes are omitted; arbitrary attributes are not rendered.
+- Block metadata test: PASS — 1 test, 3 assertions; PHPStan and PHPCS: PASS.

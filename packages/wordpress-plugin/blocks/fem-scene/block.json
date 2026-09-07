@@ -5,6 +5,11 @@
   "category": "design",
   "description": "A safe container for a Figma-derived scene.",
   "textdomain": "figma-elementor-multimodal",
+  "attributes": {
+    "femId": {"type": "string", "default": ""},
+    "schemaVersion": {"type": "string", "default": "1.0.0"},
+    "sourceHash": {"type": "string", "default": ""}
+  },
   "supports": {
     "html": false,
     "customClassName": true,
