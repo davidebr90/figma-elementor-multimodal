@@ -109,3 +109,10 @@
 - Server rendering now preserves these values as safe `data-fem-*` attributes for diagnostics and future editor tooling.
 - Invalid source hashes are omitted; arbitrary attributes are not rendered.
 - Block metadata test: PASS — 1 test, 3 assertions; PHPStan and PHPCS: PASS.
+
+## Task 6B — 2026-09-07
+
+- Added a dependency-light Gutenberg editor inspector for FEM Scene.
+- Editors can inspect/edit FEM ID, schema version and source hash, with a visible binding status notice.
+- The block remains dynamic/server-rendered and saves no unsafe HTML or JavaScript.
+- Editor asset test: PASS — 1 test, 3 assertions; Gutenberg roundtrip, PHPStan and PHPCS: PASS.
