@@ -3,9 +3,10 @@ const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const vm = require('node:vm');
 
-test('source manifest supports a configurable private WordPress site and current loopback development', () => {
+test('source manifest uses only public APIs and keeps wildcard access explicit for development', () => {
   const manifest = JSON.parse(readFileSync(require('node:path').join(__dirname, '../manifest.json'), 'utf8'));
   assert.deepEqual(manifest.networkAccess.allowedDomains, ['*']);
+  assert.equal(manifest.enablePrivatePluginApi, undefined);
   assert.ok(manifest.networkAccess.reasoning.includes('WordPress'));
   assert.ok(manifest.networkAccess.devAllowedDomains.includes('http://127.0.0.1:8096'));
 });

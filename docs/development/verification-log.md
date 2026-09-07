@@ -23,3 +23,10 @@
 - Figma characterization: PASS — 17 tests, 0 failures.
 - WordPress schema characterization: PASS — 4 tests, 9 assertions, including desktop/tablet/mobile fixture preservation.
 - Production behavior changed: no; only fixtures, tests and this verification record were added.
+
+## Task 2 — 2026-09-07
+
+- Figma manifest policy: PASS — 17 tests, 0 failures.
+- Private Figma API flag: removed from the development manifest.
+- Wildcard network access: retained only in the explicitly development-only source manifest; generated site manifests remain origin-scoped.
+- Production behavior changed: manifest permissions only; import/pairing transport unchanged.

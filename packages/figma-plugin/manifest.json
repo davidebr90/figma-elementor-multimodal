@@ -6,7 +6,6 @@
   "main": "src/code.js",
   "ui": "src/ui/index.html",
   "documentAccess": "dynamic-page",
-  "enablePrivatePluginApi": true,
   "networkAccess": {
     "allowedDomains": ["*"],
     "reasoning": "This development manifest is for local WordPress testing. FEM Setup generates a site-scoped manifest for normal use.",
