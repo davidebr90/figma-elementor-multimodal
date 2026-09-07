@@ -462,12 +462,12 @@ async function extractSelection(selection) {
   for (const item of assetPayloads) {
     const bytes = await item.node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 2 } });
     const sha256 = await digest(bytes);
-    const assetId = `image-${item.node.id}`;
-    assets[assetId] = { assetId, kind: 'image', sha256, mime: 'image/png', byteLength: bytes.byteLength };
+    const assetId = globalThis.__femAssetIdFor ? globalThis.__femAssetIdFor(item.node.id) : `image-${item.node.id}`;
+    assets[assetId] = globalThis.__femImageDescriptor ? globalThis.__femImageDescriptor(assetId, sha256, bytes.byteLength) : { assetId, kind: 'image', sha256, mime: 'image/png', byteLength: bytes.byteLength };
     // A container keeps its picture as a background; a leaf becomes an image widget.
     if (nodes[item.id].widget === 'image') nodes[item.id].image = { sha256 };
     else nodes[item.id].style.backgroundImage = sha256;
-    item.payload = { sha256, mime: 'image/png', bytes };
+    item.payload = globalThis.__femImagePayload ? globalThis.__femImagePayload(sha256, bytes) : { sha256, mime: 'image/png', bytes };
   }
   const revision = uuid();
   const document = { kind: 'fem.document', schemaVersion: '1.0.0', source: { provider: 'figma', identity: `figma:${fileKey}:${selection[0].id}`, rootNodeId: selection[0].id, fileKey }, roots, nodes, assets, tokens: {}, editables: [], capabilities, warnings, unsupported: [], revisions: { figmaRevision: revision, wordpressRevision: 0, commonBaseRevision: revision }, integrity: { algorithm: 'sha256-jcs', contentHash: '0'.repeat(64) } };

@@ -2,6 +2,7 @@ import { layoutOf } from './extraction/layout.js';
 import { solidColor } from './extraction/paint.js';
 import { weightOf } from './extraction/typography.js';
 import { responsiveOf, responsiveKey, findResponsiveMatch } from './extraction/responsive.js';
+import { assetIdFor, imageDescriptor, imagePayload } from './extraction/assets.js';
 
 globalThis.__femLayoutOf = layoutOf;
 globalThis.__femSolidColor = (paints) => solidColor(paints, (color) => {
@@ -12,3 +13,6 @@ globalThis.__femWeightOf = weightOf;
 globalThis.__femResponsiveOf = responsiveOf;
 globalThis.__femResponsiveKey = responsiveKey;
 globalThis.__femFindResponsiveMatch = findResponsiveMatch;
+globalThis.__femAssetIdFor = assetIdFor;
+globalThis.__femImageDescriptor = imageDescriptor;
+globalThis.__femImagePayload = imagePayload;

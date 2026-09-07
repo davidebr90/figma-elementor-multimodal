@@ -56,3 +56,10 @@
 - Extracted responsive parsing, normalized matching keys and hierarchy/type matching into `packages/figma-plugin/src/extraction/responsive.js`.
 - Added coverage for malformed plugin data, unknown viewports, reordered hierarchy and type changes.
 - Figma tests: PASS — 23 tests, 0 failures; bundle syntax check passed.
+
+## Task 3E — 2026-09-07
+
+- Extracted deterministic PNG asset identifiers, descriptors and payload validation.
+- Unsupported formats, malformed SHA-256 values and invalid byte sizes are rejected before descriptor creation.
+- Figma tests: PASS — 25 tests, 0 failures; bundle syntax check passed.
+- SVG import, sanitization and remote asset fetching remain intentionally disabled and require a separate security-gated task.
