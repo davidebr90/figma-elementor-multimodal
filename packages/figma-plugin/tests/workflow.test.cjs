@@ -2,6 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const vm = require('node:vm');
+const { execFileSync } = require('node:child_process');
 
 test('source manifest uses only public APIs and keeps wildcard access explicit for development', () => {
   const manifest = JSON.parse(readFileSync(require('node:path').join(__dirname, '../manifest.json'), 'utf8'));
@@ -23,7 +24,7 @@ test('Figma canonical hashing matches the PHP import-boundary fixture', async ()
   assert.equal(actual, expected);
 });
 
-function harness(fetchImpl, initialConnection = { baseUrl: 'https://example.test', credential: 'test' }) {
+function harness(fetchImpl, initialConnection = { baseUrl: 'https://example.test', credential: 'test' }, entry = '../src/code.js') {
   const calls = [];
   const messages = [];
   const figma = {
@@ -43,7 +44,7 @@ function harness(fetchImpl, initialConnection = { baseUrl: 'https://example.test
     } }) };
   });
   const context = vm.createContext({ figma, __html__: '', fetch, AbortController, setTimeout, clearTimeout });
-  vm.runInContext(readFileSync(require('node:path').join(__dirname, '../src/code.js'), 'utf8'), context);
+  vm.runInContext(readFileSync(require('node:path').join(__dirname, entry), 'utf8'), context);
   return { context, calls, messages };
 }
 
@@ -88,6 +89,12 @@ test('v1 extraction preserves source identity, node identity and responsive delt
   assert.equal(result.document.roots.length, 1);
   assert.equal(result.document.nodes[result.document.roots[0]].layout.padding.top, 48);
   assert.match(result.document.nodes[result.document.roots[0]].id, /^urn:fem:figma:/);
+});
+
+test('built Figma bundle initializes the plugin entrypoint', async () => {
+  execFileSync(process.execPath, ['scripts/build.mjs'], { cwd: require('node:path').join(__dirname, '..') });
+  const { context } = harness(undefined, null, '../dist/code.js');
+  assert.equal(typeof context.figma.ui.onmessage, 'function');
 });
 
 test('site-wide token sync succeeds without a selected WordPress page', async () => {

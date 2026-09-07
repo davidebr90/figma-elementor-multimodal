@@ -30,3 +30,9 @@
 - Private Figma API flag: removed from the development manifest.
 - Wildcard network access: retained only in the explicitly development-only source manifest; generated site manifests remain origin-scoped.
 - Production behavior changed: manifest permissions only; import/pairing transport unchanged.
+
+## Task 3A — 2026-09-07
+
+- Figma bundle: PASS — `npm run build` generated `dist/code.js`; bundle syntax check passed.
+- Bundle runtime smoke test: PASS — Figma UI entrypoint initialized; Figma suite 18/18.
+- Integration scope: preparatory only. Development manifest and installer still use `src/code.js` until module extraction and packaging integration are separately verified.

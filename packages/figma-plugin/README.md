@@ -16,4 +16,6 @@ Local checks:
 ```powershell
 node --test tests/workflow.test.cjs
 node --check src/code.js
+npm run build
+node --check dist/code.js
 ```
