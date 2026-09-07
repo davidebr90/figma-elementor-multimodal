@@ -7,4 +7,5 @@ tools/composer.phar
 **/dist/
 **/gen/schemas/
 docs/superpowers/
+.worktrees/
 dist/
