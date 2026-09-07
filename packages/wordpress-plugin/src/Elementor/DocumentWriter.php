@@ -19,6 +19,7 @@ final class DocumentWriter
         $existing = get_post_meta($pageId, '_elementor_data', true);
         $tree = $this->decodeExisting($existing, $replace);
         $tree = is_array($tree) && !$replace ? $tree : [];
+        $elements = $replace ? $elements : $this->avoidIdCollisions($tree, $elements);
         $tree = array_merge($tree, $elements);
 
         if (class_exists('Elementor\\Plugin') && isset(\Elementor\Plugin::$instance->documents)) {
@@ -64,6 +65,57 @@ final class DocumentWriter
             throw new \RuntimeException('Elementor document data must be a JSON array.');
         }
         return $decoded;
+    }
+
+    /** @param array<mixed> $existing @param list<array<string,mixed>> $elements @return list<array<string,mixed>> */
+    private function avoidIdCollisions(array $existing, array $elements): array
+    {
+        $used = [];
+        $this->collectElementIds($existing, $used);
+        foreach ($elements as &$element) {
+            $this->remapElementIds($element, $used);
+        }
+        unset($element);
+        return $elements;
+    }
+
+    /** @param array<mixed> $tree @param array<string,bool> $used */
+    private function collectElementIds(array $tree, array &$used): void
+    {
+        foreach ($tree as $value) {
+            if (!is_array($value)) {
+                continue;
+            }
+            if (isset($value['id']) && is_string($value['id']) && preg_match('/^[a-z0-9]{7}$/', $value['id']) === 1) {
+                $used[$value['id']] = true;
+            }
+            if (isset($value['elements']) && is_array($value['elements'])) {
+                $this->collectElementIds($value['elements'], $used);
+            }
+        }
+    }
+
+    /** @param array<string,mixed> $element @param array<string,bool> $used */
+    private function remapElementIds(array &$element, array &$used): void
+    {
+        if (isset($element['id']) && is_string($element['id']) && preg_match('/^[a-z0-9]{7}$/', $element['id']) === 1) {
+            $id = $element['id'];
+            if (isset($used[$id])) {
+                do {
+                    $id = substr(bin2hex(random_bytes(4)), 0, 7);
+                } while (isset($used[$id]));
+                $element['id'] = $id;
+            }
+            $used[$id] = true;
+        }
+        if (isset($element['elements']) && is_array($element['elements'])) {
+            foreach ($element['elements'] as &$child) {
+                if (is_array($child)) {
+                    $this->remapElementIds($child, $used);
+                }
+            }
+            unset($child);
+        }
     }
 
     private function clearCache(): void

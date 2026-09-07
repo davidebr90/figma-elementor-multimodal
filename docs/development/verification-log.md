@@ -116,3 +116,9 @@
 - Editors can inspect/edit FEM ID, schema version and source hash, with a visible binding status notice.
 - The block remains dynamic/server-rendered and saves no unsafe HTML or JavaScript.
 - Editor asset test: PASS — 1 test, 3 assertions; Gutenberg roundtrip, PHPStan and PHPCS: PASS.
+
+## Task 7A — 2026-09-07
+
+- Elementor append now remaps colliding element IDs against the existing document tree.
+- Replace mode preserves the explicit destructive semantics.
+- Writer tests: PASS — malformed JSON, replace, and collision-remap paths covered.

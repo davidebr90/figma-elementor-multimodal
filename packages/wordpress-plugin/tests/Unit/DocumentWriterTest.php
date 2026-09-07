@@ -35,4 +35,14 @@ final class DocumentWriterTest extends TestCase
         $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = '{broken';
         self::assertSame(1, (new DocumentWriter())->write(12, [['id' => 'new']], true));
     }
+
+    public function testAppendRemapsCollidingElementIds(): void
+    {
+        $GLOBALS['fem_test_post_meta'][12]['_elementor_data'] = json_encode([['id' => 'abc1234', 'elements' => []]]);
+
+        self::assertSame(2, (new DocumentWriter())->write(12, [['id' => 'abc1234', 'elements' => []]], false));
+        $saved = json_decode(stripslashes((string) $GLOBALS['fem_test_post_meta'][12]['_elementor_data']), true);
+        self::assertNotSame('abc1234', $saved[1]['id']);
+        self::assertMatchesRegularExpression('/^[a-z0-9]{7}$/', $saved[1]['id']);
+    }
 }
