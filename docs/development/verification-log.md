@@ -50,3 +50,9 @@
 - Extracted typography weight normalization into `packages/figma-plugin/src/extraction/typography.js`.
 - Legacy code retains a fallback and the production bundle uses the extracted helper through the bridge.
 - Figma tests: PASS — 21 tests, 0 failures; bundle syntax check passed.
+
+## Task 3D — 2026-09-07
+
+- Extracted responsive parsing, normalized matching keys and hierarchy/type matching into `packages/figma-plugin/src/extraction/responsive.js`.
+- Added coverage for malformed plugin data, unknown viewports, reordered hierarchy and type changes.
+- Figma tests: PASS — 23 tests, 0 failures; bundle syntax check passed.

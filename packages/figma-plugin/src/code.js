@@ -287,7 +287,7 @@ function legacyLayoutOf(node) {
 const layoutOf = globalThis.__femLayoutOf || legacyLayoutOf;
 
 /** Reads explicit viewport overrides written by FEM or a companion Figma workflow. */
-function responsiveOf(node) {
+function legacyResponsiveOf(node) {
   if (typeof node.getPluginData !== 'function') return null;
   const raw = node.getPluginData('fem-responsive');
   if (!raw) return null;
@@ -303,10 +303,12 @@ function responsiveOf(node) {
     return null;
   }
 }
+const responsiveOf = globalThis.__femResponsiveOf || legacyResponsiveOf;
 
-function responsiveKey(node, index) {
+function legacyResponsiveKey(node, index) {
   return `${index}:${String(node.name || '').trim().toLowerCase()}`;
 }
+const responsiveKey = globalThis.__femResponsiveKey || legacyResponsiveKey;
 
 function captureResponsiveSelection(viewport) {
   if (!['desktop', 'tablet', 'mobile'].includes(viewport)) throw new Error('Unsupported responsive viewport.');
@@ -341,8 +343,8 @@ function responsiveOverridesFor(node, index, path = [], warnings = []) {
   for (const viewport of ['desktop', 'tablet', 'mobile']) {
     const captured = (responsiveDraft[viewport] || []).find((item) => item.key === key) || (responsiveDraft[viewport] || [])[index];
     if (captured) {
-      let match = captured.tree;
-      for (const name of path) match = match?.children.find(child => String(child.name || '').trim().toLowerCase() === name);
+      let match = globalThis.__femFindResponsiveMatch ? globalThis.__femFindResponsiveMatch(captured, path, node.type) : captured.tree;
+      if (!globalThis.__femFindResponsiveMatch) for (const name of path) match = match?.children.find(child => String(child.name || '').trim().toLowerCase() === name);
       if (!match || match.type !== node.type) {
         warnings.push({ code: 'responsive-unmatched', path: node.id, message: `${viewport}: no matching layer for "${node.name}"; base values retained.` });
         continue;
