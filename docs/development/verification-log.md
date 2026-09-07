@@ -1,0 +1,19 @@
+# FEM verification log
+
+## Baseline — 2026-09-07
+
+- Baseline commit: `0237ea7`
+- Worktree: `codex/fem-task-00`
+- Environment: Windows PowerShell; Node.js 24.13.1; PHP 8.3.31; Docker Desktop Linux engine; Rust toolchain available.
+- Figma plugin syntax: PASS (`node --check packages/figma-plugin/src/code.js`).
+- Figma plugin tests: PASS — 16 tests, 0 failures.
+- WordPress PHPUnit: PASS — 60 tests, 145 assertions, 1 intentional live-WordPress migration skip.
+- PHPStan: PASS — no errors.
+- PHPCS: PASS — no errors.
+- Gutenberg block roundtrip: PASS — 7 blocks valid; repeated save, text edit, links, FEM identity and responsive overrides preserved.
+- Installer Node tests: PASS — 10 tests, 0 failures.
+- Installer Rust tests: PASS — 2 tests, 0 failures.
+- Docker Compose configuration: PASS.
+- Artifact hashes: not generated for this baseline; no release artifact was produced.
+- Notes: Composer dependencies were installed in the isolated worktree through the `composer:2` Docker image because the host PHP lacked ZIP support. No product source files were changed by dependency setup.
+
