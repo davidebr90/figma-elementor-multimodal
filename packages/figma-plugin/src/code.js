@@ -251,7 +251,7 @@ function isSpacer(node) {
 const hasImageFill = (node) => Array.isArray(node.fills) && node.fills.some((fill) => fill.type === 'IMAGE' && fill.visible !== false);
 const hasSolidFill = (node) => Array.isArray(node.fills) && node.fills.some((fill) => fill.type === 'SOLID' && fill.visible !== false);
 
-function solidColor(paints) {
+function legacySolidColor(paints) {
   if (!Array.isArray(paints)) return null;
   // Figma paints the array bottom-up, so the visible colour is the last one.
   const paint = [...paints].reverse().find((item) => item.type === 'SOLID' && item.visible !== false);
@@ -261,9 +261,10 @@ function solidColor(paints) {
   const channel = (key) => Math.round(Math.max(0, Math.min(1, paint.color[key])) * 255);
   return `rgba(${channel('r')}, ${channel('g')}, ${channel('b')}, ${Math.round(alpha * 100) / 100})`;
 }
+const solidColor = globalThis.__femSolidColor || legacySolidColor;
 
 /** Auto-layout is what maps onto an Elementor flex container; everything else is a warning. */
-function layoutOf(node) {
+function legacyLayoutOf(node) {
   const layout = { width: Math.round(node.width || 0), height: Math.round(node.height || 0) };
   if (node.layoutMode && node.layoutMode !== 'NONE') {
     layout.mode = node.layoutMode === 'GRID' ? 'grid' : 'flex';
@@ -283,6 +284,7 @@ function layoutOf(node) {
   if (node.layoutSizingVertical) layout.sizingV = node.layoutSizingVertical;
   return layout;
 }
+const layoutOf = globalThis.__femLayoutOf || legacyLayoutOf;
 
 /** Reads explicit viewport overrides written by FEM or a companion Figma workflow. */
 function responsiveOf(node) {

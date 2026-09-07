@@ -36,3 +36,11 @@
 - Figma bundle: PASS — `npm run build` generated `dist/code.js`; bundle syntax check passed.
 - Bundle runtime smoke test: PASS — Figma UI entrypoint initialized; Figma suite 18/18.
 - Integration scope: preparatory only. Development manifest and installer still use `src/code.js` until module extraction and packaging integration are separately verified.
+
+## Task 3B — 2026-09-07
+
+- Extracted pure `layoutOf` and `solidColor` helpers under `packages/figma-plugin/src/extraction/`.
+- Added a bundle bridge with legacy fallback, so source development remains executable without bundling.
+- Figma extraction/helper tests: PASS — 20 tests, 0 failures, no warnings.
+- Bundle build and syntax check: PASS.
+- Integration scope: Elementor/WordPress code unchanged; installer still consumes the legacy-compatible source entry.

@@ -9,6 +9,7 @@ await build({
   entryPoints: [`${root}/src/code.js`],
   outfile: `${root}/dist/code.js`,
   bundle: true,
+  inject: [`${root}/src/bundle-bridge.js`],
   format: 'iife',
   platform: 'neutral',
   target: 'es2020',
