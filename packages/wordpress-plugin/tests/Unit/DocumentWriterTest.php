@@ -15,12 +15,19 @@ if (!function_exists('wp_slash')) {
     function wp_slash(string $value): string { return addslashes($value); }
 }
 if (!function_exists('wp_json_encode')) {
-    function wp_json_encode(mixed $value): string|false { return json_encode($value); }
+    function wp_json_encode(mixed $value): string|false
+    {
+        return ($GLOBALS['fem_test_json_failure'] ?? false) ? false : json_encode($value);
+    }
 }
 
 final class DocumentWriterTest extends TestCase
 {
-    protected function setUp(): void { $GLOBALS['fem_test_post_meta'] = []; }
+    protected function setUp(): void
+    {
+        $GLOBALS['fem_test_post_meta'] = [];
+        $GLOBALS['fem_test_json_failure'] = false;
+    }
 
     public function testMalformedExistingElementorDataFailsClosed(): void
     {
@@ -44,5 +51,14 @@ final class DocumentWriterTest extends TestCase
         $saved = json_decode(stripslashes((string) $GLOBALS['fem_test_post_meta'][12]['_elementor_data']), true);
         self::assertNotSame('abc1234', $saved[1]['id']);
         self::assertMatchesRegularExpression('/^[a-z0-9]{7}$/', $saved[1]['id']);
+    }
+
+    public function testJsonEncodingFailureDoesNotWriteAnEmptyDocument(): void
+    {
+        $GLOBALS['fem_test_json_failure'] = true;
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('could not be encoded');
+        (new DocumentWriter())->write(12, [['id' => 'new']], true);
+        self::assertArrayNotHasKey('_elementor_data', $GLOBALS['fem_test_post_meta'][12] ?? []);
     }
 }

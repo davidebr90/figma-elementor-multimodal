@@ -122,3 +122,4 @@
 - Elementor append now remaps colliding element IDs against the existing document tree.
 - Replace mode preserves the explicit destructive semantics.
 - Writer tests: PASS — malformed JSON, replace, and collision-remap paths covered.
+- JSON persistence failure is now fail-closed; no empty `_elementor_data` value is written.

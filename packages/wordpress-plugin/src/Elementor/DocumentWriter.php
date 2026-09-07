@@ -35,7 +35,11 @@ final class DocumentWriter
             }
         }
 
-        update_post_meta($pageId, '_elementor_data', wp_slash((string) wp_json_encode($tree)));
+        $encoded = wp_json_encode($tree);
+        if (!is_string($encoded)) {
+            throw new \RuntimeException('Elementor document could not be encoded as JSON.');
+        }
+        update_post_meta($pageId, '_elementor_data', wp_slash($encoded));
         update_post_meta($pageId, '_elementor_edit_mode', 'builder');
         if (defined('ELEMENTOR_VERSION')) {
             update_post_meta($pageId, '_elementor_version', ELEMENTOR_VERSION);
