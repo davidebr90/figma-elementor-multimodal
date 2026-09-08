@@ -9,6 +9,7 @@ FEM è in beta: usare prima un sito di staging e verificare sempre l’output pr
 - [Sicurezza e privacy](SICUREZZA.md)
 - [Limiti noti e verifiche obbligatorie](LIMITI.md)
 - [Sviluppo e verifiche](SVILUPPO.md)
+- [Piano di stabilizzazione FEM 2.0](development/v2-stabilization.md)
 - [Riferimenti tecnici pubblici](RIFERIMENTI-TECNICI.md)
 - [Sistema visivo FEM](brand/fem-visual-system.md)
 

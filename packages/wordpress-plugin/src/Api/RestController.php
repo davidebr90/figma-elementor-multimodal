@@ -220,6 +220,8 @@ final class RestController
             return $this->responses->error(401, 'invalid-credential', 'Authentication failed.', $requestId);
         } catch (\OutOfRangeException) {
             return $this->responses->error(404, 'import-not-found', 'Import was not found.', $requestId);
+        } catch (\InvalidArgumentException $exception) {
+            return $this->responses->error(422, 'invalid-asset', $exception->getMessage(), $requestId);
         }
     }
 

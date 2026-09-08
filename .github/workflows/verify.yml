@@ -41,7 +41,9 @@ jobs:
           extensions: mbstring
       - run: composer install --no-interaction --prefer-dist
         working-directory: packages/wordpress-plugin
-      - run: node --test tests/workflow.test.cjs
+      - run: npm ci
+        working-directory: packages/figma-plugin
+      - run: npm test
         working-directory: packages/figma-plugin
       - run: node --check src/code.js
         working-directory: packages/figma-plugin

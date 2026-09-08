@@ -9,6 +9,7 @@ FEM is beta software. Use a staging website first and review every imported page
 - [Security and privacy](SECURITY.md)
 - [Known limitations and mandatory checks](LIMITATIONS.md)
 - [Development and validation](DEVELOPMENT.md)
+- [FEM 2.0 stabilization plan](V2-STABILIZATION.md)
 - [Public technical references](TECHNICAL-REFERENCES.md)
 - [FEM visual system](BRAND.md)
 
