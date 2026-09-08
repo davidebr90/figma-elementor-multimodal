@@ -82,6 +82,10 @@ final class WordPressMigrationTest extends TestCase
         self::assertSame(200, $commitResponse->get_status());
         self::assertSame('1', $commitResponse->get_data()['data']['revision']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $commitResponse->get_data()['data']['snapshotId']);
+
+        $retryResponse = rest_get_server()->dispatch($commitRequest);
+        self::assertSame(200, $retryResponse->get_status());
+        self::assertSame($commitResponse->get_data()['data']['snapshotId'], $retryResponse->get_data()['data']['snapshotId']);
     }
 
     private function requireWordPressHarness(): void
