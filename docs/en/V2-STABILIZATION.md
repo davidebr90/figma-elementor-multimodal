@@ -11,7 +11,7 @@ This document separates implemented beta capabilities from the checks still requ
 | Responsive output | Desktop/tablet/mobile layout, paint and borders are available | Visual comparisons at target breakpoints and intermediate widths for supported cases |
 | Complex content | No universal prototype or JavaScript conversion | Accessible declarative interaction catalogue; isolated mode only after validation |
 | Installer | Windows build exists; macOS/Linux pipeline exists | Native builds, clean installation, update, signing and target-platform tests |
-| Docker runtime on Windows | Compose environment exists, but the local host remains unstable | Repeated successful start/stop cycles; Linux CI must not rely on Windows Docker Desktop |
+| Docker runtime on Windows | Compose environment exists, but the local host remains unstable; real WordPress migration is covered in Linux CI | Repeated successful start/stop cycles; extend runtime CI to pairing and import |
 
 ## Change rules
 

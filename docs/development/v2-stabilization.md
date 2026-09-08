@@ -11,7 +11,7 @@ Questo documento distingue le funzioni già presenti dalle verifiche ancora nece
 | Responsive | Layout, paint e bordi desktop/tablet/mobile disponibili | Confronti visivi su breakpoint e larghezze intermedie per i casi dichiarati supportati |
 | Contenuti complessi | Nessuna conversione universale di prototipi o JavaScript | Catalogo di interazioni dichiarative accessibili; modalità isolata solo se validata |
 | Installer | Windows compilato; pipeline macOS/Linux disponibile | Build native, installazione pulita, aggiornamento, firma e test su piattaforme target |
-| Runtime Docker Windows | Ambiente Compose disponibile, ma host locale instabile | Più cicli di avvio/arresto riusciti; la CI Linux non deve dipendere da Docker Desktop Windows |
+| Runtime Docker Windows | Ambiente Compose disponibile, ma host locale instabile; migrazione WordPress reale coperta in CI Linux | Più cicli di avvio/arresto riusciti; estendere il runtime CI a pairing e import |
 
 ## Regole per le modifiche
 

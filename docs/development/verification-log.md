@@ -1,5 +1,12 @@
 # FEM verification log
 
+## Linux WordPress integration CI — 2026-09-08
+
+- GitHub Actions workflow `FEM source verification`, run `34220119282`: PASS.
+- `wordpress-integration` starts MySQL 8.0, installs the WordPress test library, loads the FEM plugin and runs `WordPressMigrationTest` against a real database.
+- The migration runs twice in the same test, confirming the current private-table migration is idempotent in the WordPress runtime.
+- This check runs on Linux runners and does not depend on Docker Desktop on the Windows development machine.
+
 ## Baseline — 2026-09-07
 
 - Baseline commit: `0237ea7`
