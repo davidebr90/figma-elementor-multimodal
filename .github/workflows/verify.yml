@@ -53,7 +53,7 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
       - name: Install WordPress test library
         run: |
-          curl --fail --silent --show-error --location https://raw.githubusercontent.com/wp-cli/wp-cli/v2.12.0/utils/install-wp-tests.sh --output /tmp/install-wp-tests.sh
+          curl --fail --silent --show-error --location https://raw.githubusercontent.com/wp-cli/scaffold-command/8ad932fce7be1112707c7ac119f6f828cca075d4/templates/install-wp-tests.sh --output /tmp/install-wp-tests.sh
           bash /tmp/install-wp-tests.sh wordpress_test root root 127.0.0.1:3306 latest
       - name: Run real WordPress database migration test
         env:
