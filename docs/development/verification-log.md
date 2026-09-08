@@ -5,6 +5,7 @@
 - GitHub Actions workflow `FEM source verification`, run `34220119282`: PASS.
 - `wordpress-integration` starts MySQL 8.0, installs the WordPress test library, loads the FEM plugin and runs `WordPressMigrationTest` against a real database.
 - The migration runs twice in the same test, confirming the current private-table migration is idempotent in the WordPress runtime.
+- The same integration test exercises REST pairing, credential exchange, FEM document staging, snapshot commit and a repeated idempotent commit.
 - This check runs on Linux runners and does not depend on Docker Desktop on the Windows development machine.
 
 ## Baseline — 2026-09-07
