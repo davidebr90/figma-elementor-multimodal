@@ -8,7 +8,7 @@ This document separates implemented beta capabilities from the checks still requ
 | Pairing and credentials | Scopes, expiry, renewal and revocation are available | Interrupted-network, renewal-during-import and concurrent-revocation tests |
 | Staging and commit | Asset manifest, expiry, integrity and idempotency are available | No partial content after errors, duplicate requests or retries |
 | Elementor and Gutenberg | Native import and namespaced IDs are available | Tests on real WordPress, Elementor and Gutenberg with append, replace and duplication |
-| Responsive output | Desktop/tablet/mobile layout, paint and borders are available; the client also normalizes legacy grouped `fem-responsive` `layout`/`style`/`text` metadata | Visual comparisons at target breakpoints and intermediate widths for supported cases |
+| Responsive output | Desktop/tablet/mobile layout, paint, borders and typography are available; the client also normalizes legacy grouped `fem-responsive` `layout`/`style`/`text` metadata | Visual comparisons at target breakpoints and intermediate widths for supported cases |
 | Complex content | No universal prototype or JavaScript conversion | Accessible declarative interaction catalogue; isolated mode only after validation |
 | Installer | Windows build exists; macOS/Linux pipeline exists | Native builds, clean installation, update, signing and target-platform tests |
 | Docker runtime on Windows | Compose environment exists, but the local host remains unstable; real WordPress migration is covered in Linux CI | Repeated successful start/stop cycles; extend runtime CI to pairing and import |

@@ -190,6 +190,7 @@ final class Transpiler
             $this->colorSetting($settings, $globals, 'title_color', (string) $text['color']);
         }
         $this->typographySetting($settings, $globals, 'typography', $text);
+        $this->applyExplicitTypography($settings, $node, 'typography');
         return $this->wrap('widget', 'heading', $settings, $globals, []);
     }
 
@@ -207,6 +208,7 @@ final class Transpiler
             $this->colorSetting($settings, $globals, 'text_color', (string) $text['color']);
         }
         $this->typographySetting($settings, $globals, 'typography', $text);
+        $this->applyExplicitTypography($settings, $node, 'typography');
         return $this->wrap('widget', 'text-editor', $settings, $globals, []);
     }
 
@@ -242,6 +244,8 @@ final class Transpiler
         if ($text !== []) {
             $this->typographySetting($settings, $globals, 'typography', $text);
         }
+        $this->applyExplicitResponsive($settings, $node);
+        $this->applyExplicitTypography($settings, $node, 'typography');
         if (!empty($style['radius'])) {
             $settings['border_radius'] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], (int) $style['radius']), true);
         }
@@ -494,10 +498,23 @@ final class Transpiler
                 $settings['border_radius' . $suffix] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], max(0, min(999, (int) $values['radius']))), true);
             }
             if (isset($values['borderWidth']) && is_numeric($values['borderWidth'])) {
+                $settings['border_border'] = 'solid';
                 $settings['border_width' . $suffix] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], max(0, min(100, (int) $values['borderWidth']))), true);
             }
             if (isset($values['borderColor']) && is_string($values['borderColor']) && $this->isSafeColor($values['borderColor'])) {
                 $settings['border_color' . $suffix] = $values['borderColor'];
+            }
+        }
+    }
+
+    /** Applies an explicitly captured Figma text size after the base fallback. @param array<string,mixed> $settings @param array<string,mixed> $node */
+    private function applyExplicitTypography(array &$settings, array $node, string $control): void
+    {
+        $responsive = is_array($node['responsive'] ?? null) ? $node['responsive'] : [];
+        foreach (['tablet' => '_tablet', 'mobile' => '_mobile'] as $viewport => $suffix) {
+            $values = is_array($responsive[$viewport] ?? null) ? $responsive[$viewport] : [];
+            if (isset($values['fontSize']) && is_numeric($values['fontSize'])) {
+                $settings[$control . '_font_size' . $suffix] = ['unit' => 'px', 'size' => max(1, min(400, (float) $values['fontSize'])), 'sizes' => []];
             }
         }
     }

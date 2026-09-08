@@ -30,6 +30,18 @@ final class TranspilerTest extends TestCase
         self::assertSame(320, $settings['width_mobile']['size']);
     }
 
+    public function testExplicitMobileTypographyOverridesTheInferredHeadingSize(): void
+    {
+        $nodes = ['heading' => self::node('heading', 'heading', [
+            'text' => ['characters' => 'Titolo', 'fontFamily' => 'Nonesuch', 'fontSize' => 72, 'fontWeight' => '800'],
+            'responsive' => ['mobile' => ['fontSize' => 28]],
+        ])];
+
+        $settings = (new Transpiler())->transpile(self::document($nodes, 'heading'))['elements'][0]['settings'];
+
+        self::assertSame(28.0, $settings['typography_font_size_mobile']['size']);
+    }
+
     public function testExplicitMobilePaintAndBorderValuesAreProjectedToElementor(): void
     {
         $nodes = ['root' => self::node('root', 'container', [
@@ -44,6 +56,25 @@ final class TranspilerTest extends TestCase
         $settings = (new Transpiler())->transpile(self::document($nodes, 'root'))['elements'][0]['settings'];
         self::assertSame('#112233', $settings['background_color_mobile']);
         self::assertSame('18', $settings['border_radius_mobile']['top']);
+        self::assertSame('2', $settings['border_width_mobile']['top']);
+        self::assertSame('#445566', $settings['border_color_mobile']);
+    }
+
+    public function testExplicitMobileButtonPaintIsProjectedToElementor(): void
+    {
+        $nodes = ['button' => self::node('button', 'button', [
+            'content' => ['name' => 'CTA', 'characters' => 'Apri'],
+            'text' => ['characters' => 'Apri', 'fontSize' => 20],
+            'responsive' => ['mobile' => [
+                'background' => '#112233', 'radius' => 14,
+                'borderWidth' => 2, 'borderColor' => '#445566',
+            ]],
+        ])];
+
+        $settings = (new Transpiler())->transpile(self::document($nodes, 'button'))['elements'][0]['settings'];
+
+        self::assertSame('#112233', $settings['background_color_mobile']);
+        self::assertSame('14', $settings['border_radius_mobile']['top']);
         self::assertSame('2', $settings['border_width_mobile']['top']);
         self::assertSame('#445566', $settings['border_color_mobile']);
     }
