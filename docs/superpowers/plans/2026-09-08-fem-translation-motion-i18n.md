@@ -1,6 +1,6 @@
 # FEM Translation, Motion and i18n Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> Execute this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Safely integrate verified Figma/Elementor translation improvements, bilingual UI, and an opt-in GSAP motion foundation.
 

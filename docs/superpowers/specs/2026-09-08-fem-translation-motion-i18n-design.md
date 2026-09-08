@@ -72,16 +72,6 @@ Allowed presets: `fade`, `fade-up`, `fade-down`, `slide-left`, `slide-right`, `s
 - Browser/runtime: a DOM-level motion runtime test with reduced-motion enabled and disabled.
 - CI: existing Figma, PHP, static analysis, style checks, and real WordPress/MySQL integration all remain green.
 
-## Team allocation
+## Delivery approach
 
-Independent read-only audits may run in parallel. Implementation tasks that touch a shared contract remain sequential.
-
-| Work | Model / reasoning | Why |
-| --- | --- | --- |
-| Archive diff, catalogue and test inventory | Luna / low | Mechanical comparison and evidence collection. |
-| Figma UI strings and Node tests | Luna / medium | Localised, bounded JavaScript/UI work. |
-| WordPress gettext extraction/catalogue | Luna / medium | Conventional WordPress localization. |
-| Widget mapping and responsive projection | Terra / high | Cross-layer behavior and compatibility. |
-| Motion contract, schema and security review | Astra / xhigh | Persistent contract, client runtime and injection boundary. |
-| Integration review and CI triage | Terra / high | Requires cross-package context but no new architecture. |
-
+Independent audits may run in parallel. Changes to the shared Figma-to-WordPress contract are implemented sequentially, with focused regression tests and full integration checks between increments.

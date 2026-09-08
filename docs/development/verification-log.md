@@ -11,7 +11,7 @@
 ## Baseline — 2026-09-07
 
 - Baseline commit: `0237ea7`
-- Worktree: `codex/fem-task-00`
+- Isolated development workspace used for the baseline.
 - Environment: Windows PowerShell; Node.js 24.13.1; PHP 8.3.31; Docker Desktop Linux engine; Rust toolchain available.
 - Figma plugin syntax: PASS (`node --check packages/figma-plugin/src/code.js`).
 - Figma plugin tests: PASS — 16 tests, 0 failures.
