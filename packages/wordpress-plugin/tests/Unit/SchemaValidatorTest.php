@@ -20,6 +20,16 @@ final class SchemaValidatorTest extends TestCase
         (new SchemaValidator())->assertValid($document);
     }
 
+    public function testRecognizedReviewsWidgetIsAcceptedAtTheImportBoundary(): void
+    {
+        $document = $this->document();
+        $document['nodes']['root']['widget'] = 'reviews';
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+
+        (new SchemaValidator())->assertValid($document);
+        self::assertSame('reviews', $document['nodes']['root']['widget']);
+    }
+
     public function testDocumentIntegrityDetectsContentTampering(): void
     {
         $document = $this->document();

@@ -225,6 +225,25 @@ final class TranspilerTest extends TestCase
         self::assertNotEmpty($result['notes']);
     }
 
+    public function testReviewsTurnReadableChildCardsIntoNativeReviewSlides(): void
+    {
+        $nodes = [
+            'reviews' => self::node('reviews', 'reviews', ['children' => ['first', 'second'], 'content' => ['name' => 'Recensioni']]),
+            'first' => self::node('first', 'container', ['children' => ['quote', 'name']]),
+            'quote' => self::node('quote', 'text-editor', ['text' => ['characters' => 'Servizio eccellente e disponibilità immediata.']]),
+            'name' => self::node('name', 'heading', ['text' => ['characters' => 'Anna']]),
+            'second' => self::node('second', 'container', ['children' => ['quote2', 'name2']]),
+            'quote2' => self::node('quote2', 'text-editor', ['text' => ['characters' => 'Professionali, veloci e molto precisi.']]),
+            'name2' => self::node('name2', 'heading', ['text' => ['characters' => 'Luca']]),
+        ];
+
+        $element = (new Transpiler())->transpile(self::document($nodes, 'reviews'))['elements'][0];
+
+        self::assertSame('reviews', $element['widgetType']);
+        self::assertCount(2, $element['settings']['slides']);
+        self::assertSame('Anna', $element['settings']['slides'][0]['name']);
+    }
+
     public function testLiteralTypographyGetsResponsiveSizesButSmallTextDoesNot(): void
     {
         $nodes = [

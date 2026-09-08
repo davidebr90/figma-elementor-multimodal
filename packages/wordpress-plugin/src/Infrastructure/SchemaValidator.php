@@ -12,7 +12,7 @@ final class SchemaValidator
     private const SUPPORTED_SCHEMA_VERSIONS = ['1.0.0', '1.1.0'];
 
     /** @var list<string> */
-    private const ALLOWED_WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'icon', 'divider', 'spacer'];
+    private const ALLOWED_WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'reviews', 'icon', 'divider', 'spacer'];
 
     /** @param array<string,mixed> $document */
     public function assertSupported(array $document): void

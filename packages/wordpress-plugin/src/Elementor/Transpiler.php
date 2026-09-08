@@ -79,6 +79,7 @@ final class Transpiler
             'button' => $this->button($node),
             'image' => $this->image($node),
             'image-gallery', 'image-carousel' => $this->gallery($node, $nodes, $widget),
+            'reviews' => $this->reviews($node, $nodes),
             'divider' => $this->divider($node),
             'spacer' => $this->spacer($node),
             'nested-accordion' => $this->accordion($node, $nodes),
@@ -368,6 +369,62 @@ final class Transpiler
         $settings = ['_title' => (string) ($node['content']['name'] ?? 'Gallery')];
         $settings[$type === 'image-carousel' ? 'carousel' : 'wp_gallery'] = $images;
         return $this->wrap('widget', $type, $settings, [], []);
+    }
+
+    /** @param array<string,mixed> $node @param array<string,mixed> $nodes @return array<string,mixed> */
+    private function reviews(array $node, array $nodes): array
+    {
+        $slides = [];
+        foreach ((array) ($node['children'] ?? []) as $childId) {
+            $child = $nodes[(string) $childId] ?? null;
+            if (!is_array($child)) {
+                continue;
+            }
+            $texts = $this->textsUnder($child, $nodes);
+            if ($texts === []) {
+                continue;
+            }
+            usort($texts, static fn (string $left, string $right): int => strlen($right) <=> strlen($left));
+            $slides[] = [
+                '_id' => substr(hash('sha256', (string) $childId), 0, 7),
+                'content' => $texts[0],
+                'name' => $texts[1] ?? '',
+                'title' => $texts[2] ?? '',
+                'rating' => '5',
+            ];
+        }
+        if ($slides === []) {
+            $this->notes[] = 'Reviews "' . ($node['content']['name'] ?? '') . '" had no readable cards; imported as a container.';
+            return $this->container($node, $nodes, false);
+        }
+        return $this->wrap('widget', 'reviews', [
+            '_title' => (string) ($node['content']['name'] ?? 'Reviews'),
+            'slides' => $slides,
+            'slides_per_view' => (string) min(3, count($slides)),
+            'slides_to_scroll' => '1',
+            'show_arrows' => count($slides) > 1 ? 'yes' : '',
+            'pagination' => count($slides) > 1 ? 'bullets' : '',
+        ], [], []);
+    }
+
+    /** @param array<string,mixed> $node @param array<string,mixed> $nodes @return list<string> */
+    private function textsUnder(array $node, array $nodes, int $depth = 0): array
+    {
+        $texts = [];
+        $own = trim((string) ($node['text']['characters'] ?? ''));
+        if ($own !== '') {
+            $texts[] = $own;
+        }
+        if ($depth >= 6) {
+            return $texts;
+        }
+        foreach ((array) ($node['children'] ?? []) as $childId) {
+            $child = $nodes[(string) $childId] ?? null;
+            if (is_array($child)) {
+                $texts = array_merge($texts, $this->textsUnder($child, $nodes, $depth + 1));
+            }
+        }
+        return $texts;
     }
 
     /**
