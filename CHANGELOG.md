@@ -1,6 +1,24 @@
 # Changelog
 
-## 0.1.0-beta — 2026-09-07
+## Unreleased — FEM 2.0 beta hardening
+
+### Italiano
+
+- Verifiche REST reali con WordPress e database in CI Linux, inclusi pairing, staging, retry e commit idempotente.
+- Validazione più rigorosa degli asset REST e rifiuto dei documenti privi della revisione Figma richiesta.
+- Normalizzazione dei metadati responsive legacy e applicazione esplicita di tipografia, geometria immagine, paint e bordi nei breakpoint Elementor.
+- Correzione di una race condition: dopo upload concorrenti lo staging ricalcola gli asset mancanti prima di esporre lo stato o consentire il commit.
+- Supporto esplicito per la mappatura **Reviews** nel plugin Figma e conversione delle card testuali leggibili in slider recensioni Elementor.
+
+### English
+
+- Real REST coverage with WordPress and a database in Linux CI, including pairing, staging, retry, and idempotent commit.
+- Stricter REST asset validation and rejection of documents missing the required Figma revision.
+- Legacy responsive-metadata normalization plus explicit Elementor breakpoint handling for typography, image geometry, paint, and borders.
+- Fixed a race condition: staging recomputes missing assets after concurrent uploads before reporting status or allowing commit.
+- Explicit **Reviews** mapping in the Figma plugin and readable review-card projection into Elementor review sliders.
+
+## v2.0.0-beta.1 — 2026-09-07
 
 ### Italiano
 

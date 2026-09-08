@@ -1,6 +1,6 @@
 {
   "productName": "FEM Setup",
-  "version": "0.1.0",
+  "version": "2.0.0-beta.1",
   "identifier": "com.fem.setup",
   "build": {
     "beforeBuildCommand": "npm run build",

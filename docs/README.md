@@ -1,6 +1,6 @@
 # Documentazione italiana
 
-FEM è in beta: usare prima un sito di staging e verificare sempre l’output prima di pubblicare. Consultare il [changelog](../CHANGELOG.md) e la [checklist di release](RELEASE-CHECKLIST.md).
+FEM è nella linea 2.0 beta; l’ultima build pubblicata è [v2.0.0-beta.1](https://github.com/davidebr90/figma-elementor-multimodal/releases/tag/v2.0.0-beta.1). Usare prima un sito di staging e verificare sempre l’output prima di pubblicare. Consultare il [changelog](../CHANGELOG.md) e la [checklist di release](RELEASE-CHECKLIST.md).
 
 - [Installazione e primo collegamento](INSTALLAZIONE.md)
 - [Configurazione WordPress](WORDPRESS.md)

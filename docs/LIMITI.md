@@ -2,7 +2,7 @@
 
 ## Beta e direzione del flusso
 
-FEM 0.1.0 è in beta e gestisce soltanto Figma → WordPress. Salva metadati di mappatura per rendere possibile un futuro percorso WordPress → Figma, ma non espone ancora un reimport inverso.
+FEM 2.0 beta (ultima build pubblicata: `v2.0.0-beta.1`) gestisce soltanto Figma → WordPress. Salva metadati di mappatura per rendere possibile un futuro percorso WordPress → Figma, ma non espone ancora un reimport inverso.
 
 ## Fedeltà visiva e responsive
 

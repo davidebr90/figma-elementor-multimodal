@@ -1,6 +1,6 @@
 # FEM Setup: stato installer Windows, macOS e Linux
 
-## Stato al 7 settembre 2026
+## Stato al 8 settembre 2026 — FEM 2.0 beta
 
 FEM Setup è un wizard desktop in Tauri 2 che verifica un sito WordPress, genera un manifest Figma limitato al dominio scelto e conserva una precedente copia locale per il rollback. Il codice dell’app e i test sono nel repository; gli installer firmati per l’utente finale non sono ancora pubblicati.
 

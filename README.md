@@ -6,7 +6,7 @@
 
 Figma Elementor Multimodal (FEM) is an open-source, self-hosted bridge for bringing a Figma selection into WordPress as editable Elementor elements or native Gutenberg blocks.
 
-**Current status: 0.1.0 beta.** The project is suitable for controlled testing environments. Always validate the imported page before publishing it on a production website. See the [changelog](CHANGELOG.md) and [release checklist](docs/RELEASE-CHECKLIST.md).
+**Current status: FEM 2.0 beta.** The latest published build is [v2.0.0-beta.1](https://github.com/davidebr90/figma-elementor-multimodal/releases/tag/v2.0.0-beta.1); this development branch contains subsequent hardening work. The project is suitable for controlled testing environments. Always validate the imported page before publishing it on a production website. See the [changelog](CHANGELOG.md) and [release checklist](docs/RELEASE-CHECKLIST.md).
 
 🇮🇹 [Italiano](README.it.md) · [Documentation in English](docs/en/README.md) · [Documentazione italiana](docs/README.md)
 

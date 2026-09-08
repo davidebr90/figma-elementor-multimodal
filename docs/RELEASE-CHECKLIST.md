@@ -1,4 +1,6 @@
-# Checklist release beta / Beta release checklist
+# Checklist di release — FEM v2.0.0-beta.1 / Release checklist
+
+Questa checklist descrive la build pubblicata `v2.0.0-beta.1`. Le modifiche successive sono registrate nella sezione **Unreleased** del [changelog](../CHANGELOG.md) e restano nella linea FEM 2.0 beta finché non viene creato un nuovo tag.
 
 ## Italiano
 

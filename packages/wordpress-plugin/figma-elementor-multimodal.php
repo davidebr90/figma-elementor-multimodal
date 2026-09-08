@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Figma Elementor Multimodal
  * Description: Secure Figma-to-WordPress integration for Elementor and Gutenberg.
- * Version: 0.1.0
+ * Version: 2.0.0-beta.1
  * Requires at least: 7.0
  * Requires PHP: 8.3
  * Text Domain: figma-elementor-multimodal

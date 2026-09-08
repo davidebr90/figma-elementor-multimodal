@@ -8,7 +8,7 @@ Use GitHub’s private security-advisory/reporting flow for this repository when
 
 ## Supported line
 
-Only the latest `0.1.x` beta line is maintained. Security fixes may require a schema migration or pairing renewal.
+Only the FEM `2.0.x` beta line is maintained. The latest published build is `v2.0.0-beta.1`; security fixes may require a schema migration or pairing renewal.
 
 ## Scope
 

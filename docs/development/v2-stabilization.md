@@ -28,4 +28,4 @@ Questo documento distingue le funzioni già presenti dalle verifiche ancora nece
 3. Ampliare il mapping responsive con fixture visive e avvisi di approssimazione.
 4. Aggiungere UX di conflitto e ripristino per proprietà personalizzate in Elementor e Gutenberg.
 5. Validare installazione e aggiornamento su Windows, macOS e Linux.
-6. Aggiornare checklist, changelog, tag e release solo dopo che le prove richieste sono verdi.
+6. Aggiornare, nello stesso commit di ogni cambiamento funzionale, la guida utente interessata e la sezione `Unreleased` del changelog. Checklist, tag e release vengono aggiornati solo dopo che le prove richieste sono verdi.

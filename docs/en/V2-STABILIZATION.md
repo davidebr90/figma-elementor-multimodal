@@ -28,4 +28,4 @@ This document separates implemented beta capabilities from the checks still requ
 3. Extend responsive mapping with visual fixtures and approximation warnings.
 4. Add conflict and reset UX for locally customized Elementor and Gutenberg properties.
 5. Validate installation and update on Windows, macOS and Linux.
-6. Update the checklist, changelog, tag and release only after all required evidence is green.
+6. In the same commit as every functional change, update the affected user guide and the `Unreleased` changelog section. Update the checklist, tag, and release only after all required evidence is green.

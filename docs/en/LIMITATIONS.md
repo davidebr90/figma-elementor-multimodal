@@ -2,7 +2,7 @@
 
 ## Beta and flow direction
 
-FEM 0.1.0 is beta and only handles Figma → WordPress. It stores mapping metadata to make future WordPress → Figma work possible, but does not expose reverse import yet.
+FEM 2.0 beta (latest published build: `v2.0.0-beta.1`) only handles Figma → WordPress. It stores mapping metadata to make future WordPress → Figma work possible, but does not expose reverse import yet.
 
 ## Visual fidelity and responsiveness
 

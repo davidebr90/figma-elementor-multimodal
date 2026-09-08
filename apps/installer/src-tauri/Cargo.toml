@@ -1,6 +1,6 @@
 [package]
 name = "fem-setup"
-version = "0.1.0"
+version = "2.0.0-beta.1"
 edition = "2021"
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
