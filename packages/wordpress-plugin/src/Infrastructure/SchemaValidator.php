@@ -38,6 +38,10 @@ final class SchemaValidator
         if (!is_array($source) || ($source['provider'] ?? null) !== 'figma' || !is_string($source['identity'] ?? null) || $source['identity'] === '') {
             throw new \InvalidArgumentException('FEM source identity is invalid.');
         }
+        $revisions = $document['revisions'];
+        if (!is_array($revisions) || !is_string($revisions['figmaRevision'] ?? null) || trim($revisions['figmaRevision']) === '') {
+            throw new \InvalidArgumentException('FEM Figma revision is invalid.');
+        }
         $roots = $document['roots'];
         $nodes = $document['nodes'];
         if (!is_array($roots) || $roots === [] || !is_array($nodes) || count($nodes) > 10000) {

@@ -41,6 +41,17 @@ final class SchemaValidatorTest extends TestCase
         self::assertTrue(true);
     }
 
+    public function testDocumentWithoutAFigmaRevisionIsRejectedBeforeStaging(): void
+    {
+        $document = $this->document();
+        $document['revisions']['figmaRevision'] = '';
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('revision');
+        (new SchemaValidator())->assertValid($document);
+    }
+
     public function testCurrentV1ResponsiveFixturePreservesDesktopAndMobileIntent(): void
     {
         /** @var array<string,mixed> $document */
