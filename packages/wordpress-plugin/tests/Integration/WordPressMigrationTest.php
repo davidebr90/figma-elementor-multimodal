@@ -70,7 +70,18 @@ final class WordPressMigrationTest extends TestCase
 
         self::assertSame(200, $stageResponse->get_status());
         self::assertSame('commit', $stageResponse->get_data()['data']['next']);
-        self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $stageResponse->get_data()['data']['importId']);
+        $importId = $stageResponse->get_data()['data']['importId'];
+        self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $importId);
+
+        $commitRequest = new \WP_REST_Request('POST', '/figma-elementor-multimodal/v1/imports/' . $importId . '/commit');
+        $commitRequest->set_header('Authorization', 'Bearer ' . $credential);
+        $commitRequest->set_header('Idempotency-Key', 'wordpress-integration-commit');
+        $commitRequest->set_header('If-Match', '"1"');
+        $commitResponse = rest_get_server()->dispatch($commitRequest);
+
+        self::assertSame(200, $commitResponse->get_status());
+        self::assertSame('1', $commitResponse->get_data()['data']['revision']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $commitResponse->get_data()['data']['snapshotId']);
     }
 
     private function requireWordPressHarness(): void
