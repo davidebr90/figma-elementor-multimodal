@@ -7,6 +7,8 @@ namespace FEM\Tests\Unit;
 use DateTimeImmutable;
 use DateInterval;
 use FEM\Application\ImportService;
+use FEM\Application\ImportState;
+use FEM\Application\ImportStore;
 use FEM\Infrastructure\DesignRepository;
 use FEM\Infrastructure\DocumentIntegrity;
 use FEM\Infrastructure\InMemoryAssetStore;
@@ -89,14 +91,31 @@ final class ImportServiceTest extends TestCase
         $this->service()->stage(['assets' => []], $document, $this->device());
     }
 
+    public function testParallelAssetUploadsDoNotRestoreAnAlreadyUploadedAssetToTheMissingList(): void
+    {
+        $firstBytes = 'first';
+        $secondBytes = 'second';
+        $first = hash('sha256', $firstBytes);
+        $second = hash('sha256', $secondBytes);
+        $store = new ReplayingImportStore();
+        $service = $this->service(null, $store);
+        $document = $this->documentWithAssets([$first, $second]);
+        $receipt = $service->stage(['assets' => [['sha256' => $first], ['sha256' => $second]]], $document, $this->device());
+
+        $service->attachAsset($receipt->importId, $this->device(), $first, $firstBytes, 'image/png');
+        $service->attachAsset($receipt->importId, $this->device(), $second, $secondBytes, 'image/png');
+
+        self::assertSame([], $service->status($receipt->importId, $this->device())['missingAssets']);
+    }
+
     private function device(): AuthenticatedDevice
     {
         return new AuthenticatedDevice(7, 'figma-device', ['import:write', 'asset:write'], 'pairing');
     }
 
-    private function service(?FrozenClock $clock = null): ImportService
+    private function service(?FrozenClock $clock = null, ?ImportStore $imports = null): ImportService
     {
-        return new ImportService(new SchemaValidator(), new InMemoryAssetStore(), new InMemoryImportStore(), new class implements DesignRepository {
+        return new ImportService(new SchemaValidator(), new InMemoryAssetStore(), $imports ?? new InMemoryImportStore(), new class implements DesignRepository {
             public function upsert(string $designId, string $sourceIdentity, string $schemaVersion, ?string $revision, DateTimeImmutable $now): void {}
         }, new ImportServiceSnapshotRepository(), new InMemoryIdempotencyRepository(), $clock ?? new FrozenClock(new DateTimeImmutable('2026-09-04T10:00:00+00:00')), new SequenceRandomSource('import-tests'));
     }
@@ -118,6 +137,44 @@ final class ImportServiceTest extends TestCase
 
         return $document;
     }
+
+    /** @param list<string> $hashes @return array<string,mixed> */
+    private function documentWithAssets(array $hashes): array
+    {
+        $document = $this->document();
+        $document['assets'] = [];
+        foreach ($hashes as $index => $sha256) {
+            $document['assets']['asset-' . $index] = ['assetId' => 'asset-' . $index, 'kind' => 'image', 'sha256' => $sha256, 'mime' => 'image/png', 'byteLength' => 10];
+        }
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+        return $document;
+    }
+}
+
+/** Simulates two WordPress requests that rehydrate the same pre-upload state. */
+final class ReplayingImportStore implements ImportStore
+{
+    private ?ImportState $current = null;
+    private ?ImportState $stale = null;
+    private int $reads = 0;
+
+    public function save(ImportState $state): void
+    {
+        $this->current = clone $state;
+        if ($this->stale === null) {
+            $this->stale = clone $state;
+        }
+    }
+
+    public function find(string $importId): ?ImportState
+    {
+        $this->reads++;
+        return $this->reads <= 2 ? clone $this->stale : clone $this->current;
+    }
+
+    public function markCommitted(string $importId): void {}
+
+    public function delete(string $importId): void {}
 }
 
 final class ImportServiceSnapshotRepository implements SnapshotRepository

@@ -72,9 +72,8 @@ final class ImportService
             throw new \InvalidArgumentException('Asset is not part of the staged manifest.');
         }
         $receipt = $this->assets->put($sha256, $bytes, $mime);
-        $state->missingAssets = array_values(array_diff($state->missingAssets, [$receipt->sha256]));
-        // The WordPress store rehydrates a fresh object per request, so the
-        // shortened list must be written back or the commit still sees it missing.
+        // Uploads can rehydrate the same state concurrently. Recompute from the
+        // asset store rather than applying a read-modify-write list difference.
         $this->imports->save($state);
         return $receipt;
     }
@@ -85,10 +84,10 @@ final class ImportService
         $state = $this->requireImport($importId, $device);
         return [
             'importId' => $state->id,
-            'missingAssets' => $state->missingAssets,
+            'missingAssets' => $this->missingFor($state),
             'capabilities' => $state->document['capabilities'] ?? [],
             'warnings' => $state->document['warnings'] ?? [],
-            'syncState' => $state->missingAssets === [] ? 'ready' : 'awaiting-assets',
+            'syncState' => $this->missingFor($state) === [] ? 'ready' : 'awaiting-assets',
         ];
     }
 
@@ -106,7 +105,7 @@ final class ImportService
             return $this->idempotentReceipt($prior, $requestHash);
         }
         $state = $this->requireImport($importId, $device);
-        if ($state->missingAssets !== []) {
+        if ($this->missingFor($state) !== []) {
             throw new \RuntimeException('Import is missing mandatory assets.');
         }
         $sourceIdentity = (string) ($state->document['source']['identity'] ?? '');
@@ -152,6 +151,18 @@ final class ImportService
             throw new \OutOfRangeException('Import was not found.');
         }
         return $state;
+    }
+
+    /** @return list<string> */
+    private function missingFor(ImportState $state): array
+    {
+        $missing = [];
+        foreach (($state->manifest['assets'] ?? []) as $asset) {
+            if (is_array($asset) && is_string($asset['sha256'] ?? null) && !$this->assets->has($asset['sha256'])) {
+                $missing[] = $asset['sha256'];
+            }
+        }
+        return array_values(array_unique($missing));
     }
 
     private function designId(string $sourceIdentity): string
