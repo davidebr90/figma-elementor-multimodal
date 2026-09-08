@@ -132,7 +132,7 @@ const femId = (fileKey, id) => `urn:fem:figma:${fileKey}:${id}`;
 
 /** Explicit per-layer widget choice, stored on the Figma node so it survives re-imports. */
 const WIDGET_KEY = 'fem-widget';
-const NAMED_WIDGETS = ['button', 'heading', 'text-editor', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'icon', 'divider', 'spacer', 'container'];
+const NAMED_WIDGETS = ['button', 'heading', 'text-editor', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'reviews', 'icon', 'divider', 'spacer', 'container'];
 const WIDGET_CHOICES = [...NAMED_WIDGETS, 'skip'];
 
 function widgetFor(node) {

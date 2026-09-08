@@ -108,7 +108,7 @@
       exportButton.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'import-selection', pageId: pageSelect.value || null, target: renderTarget.value } }, '*'));
       document.querySelectorAll('.capture-responsive').forEach((button) => button.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'capture-responsive', viewport: button.dataset.viewport } }, '*')));
       syncButton.addEventListener('click', () => parent.postMessage({ pluginMessage: { type: 'sync-design-system' } }, '*'));
-      const WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'icon', 'divider', 'spacer', 'skip'];
+      const WIDGETS = ['container', 'heading', 'text-editor', 'button', 'image', 'image-gallery', 'image-carousel', 'nested-accordion', 'reviews', 'icon', 'divider', 'spacer', 'skip'];
 
       function renderOutline(items) {
         outline.innerHTML = '';

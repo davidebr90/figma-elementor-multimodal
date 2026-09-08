@@ -139,6 +139,21 @@ test('a malformed stored widget override cannot create an unsupported server wid
   assert.equal(choice.source, 'heuristic');
 });
 
+test('an explicit reviews layer mapping is preserved for the WordPress widget contract', () => {
+  const { context } = harness();
+  context.reviewNode = { type: 'FRAME', name: 'Customer voices', children: [], getPluginData: key => key === 'fem-widget' ? 'reviews' : '' };
+
+  const choice = vm.runInContext('widgetFor(reviewNode)', context);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(choice)), { widget: 'reviews', source: 'override' });
+});
+
+test('layer mapping panel offers the reviews widget explicitly', () => {
+  const ui = readFileSync(require('node:path').join(__dirname, '../src/ui/index.html'), 'utf8');
+
+  assert.match(ui, /'reviews'/);
+});
+
 test('long text is preserved without silent truncation', async () => {
   const { context } = harness();
   context.textNode = { characters: 'a'.repeat(1500), fills: [] };
