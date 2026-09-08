@@ -79,6 +79,21 @@ final class TranspilerTest extends TestCase
         self::assertSame('#445566', $settings['border_color_mobile']);
     }
 
+    public function testExplicitMobileImageGeometryIsProjectedToElementor(): void
+    {
+        $nodes = ['image' => self::node('image', 'image', [
+            'image' => ['sha256' => str_repeat('a', 64)],
+            'layout' => ['width' => 640, 'height' => 400],
+            'style' => ['radius' => 8],
+            'responsive' => ['mobile' => ['width' => 280, 'radius' => 18]],
+        ])];
+
+        $settings = (new Transpiler())->transpile(self::document($nodes, 'image'))['elements'][0]['settings'];
+
+        self::assertSame(280, $settings['width_mobile']['size']);
+        self::assertSame('18', $settings['image_border_radius_mobile']['top']);
+    }
+
     public function testEveryElementCarriesTheScopedClassMapAndSourceIdentity(): void
     {
         $document = self::document(['root' => self::node('root', 'container')], 'root');

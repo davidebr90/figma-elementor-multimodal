@@ -8,7 +8,7 @@ Questo documento distingue le funzioni già presenti dalle verifiche ancora nece
 | Pairing e credenziali | Scope, scadenza, rinnovo e revoca disponibili | Test di rete interrotta, rinnovo durante import e revoca concorrente |
 | Staging e commit | Asset manifest, scadenza, integrità e idempotenza disponibili | Nessun contenuto parziale dopo errori, richieste duplicate o retry |
 | Elementor e Gutenberg | Import nativo e ID con namespace disponibili | Test su WordPress, Elementor e Gutenberg reali con append, replace e duplicazione |
-| Responsive | Layout, paint, bordi e tipografia desktop/tablet/mobile disponibili; il client normalizza anche i metadati `fem-responsive` legacy in gruppi `layout`/`style`/`text` | Confronti visivi su breakpoint e larghezze intermedie per i casi dichiarati supportati |
+| Responsive | Layout, paint, bordi, tipografia e geometria delle immagini desktop/tablet/mobile disponibili; il client normalizza anche i metadati `fem-responsive` legacy in gruppi `layout`/`style`/`text` | Confronti visivi su breakpoint e larghezze intermedie per i casi dichiarati supportati |
 | Contenuti complessi | Nessuna conversione universale di prototipi o JavaScript | Catalogo di interazioni dichiarative accessibili; modalità isolata solo se validata |
 | Installer | Windows compilato; pipeline macOS/Linux disponibile | Build native, installazione pulita, aggiornamento, firma e test su piattaforme target |
 | Runtime Docker Windows | Ambiente Compose disponibile, ma host locale instabile; migrazione WordPress reale coperta in CI Linux | Più cicli di avvio/arresto riusciti; estendere il runtime CI a pairing e import |

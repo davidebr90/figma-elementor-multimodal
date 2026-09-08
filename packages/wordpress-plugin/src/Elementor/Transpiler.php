@@ -331,6 +331,16 @@ final class Transpiler
         if (!empty($style['radius'])) {
             $settings['image_border_radius'] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], (int) $style['radius']), true);
         }
+        $responsive = is_array($node['responsive'] ?? null) ? $node['responsive'] : [];
+        foreach (['tablet' => '_tablet', 'mobile' => '_mobile'] as $viewport => $suffix) {
+            $values = is_array($responsive[$viewport] ?? null) ? $responsive[$viewport] : [];
+            if (isset($values['width']) && is_numeric($values['width'])) {
+                $settings['width' . $suffix] = ['unit' => 'px', 'size' => max(0, (int) $values['width']), 'sizes' => []];
+            }
+            if (isset($values['radius']) && is_numeric($values['radius'])) {
+                $settings['image_border_radius' . $suffix] = $this->box(array_fill_keys(['top', 'right', 'bottom', 'left'], max(0, min(999, (int) $values['radius']))), true);
+            }
+        }
         return $this->wrap('widget', 'image', $settings, $globals, []);
     }
 
