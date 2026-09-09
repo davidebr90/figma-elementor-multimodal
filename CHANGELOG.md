@@ -12,6 +12,7 @@
 - Pannello Figma localizzato in italiano e inglese, con fallback inglese deterministico per le lingue non ancora disponibili.
 - Text domain WordPress caricato durante `init`; la pagina Pairing usa ora stringhe traducibili come base per i cataloghi della distribuzione.
 - Descrittori motion FEM ora validati lato server e conservati esclusivamente nei metadati `_fem` degli elementi Elementor.
+- Il plugin Figma esporta `fem-motion` solo dopo normalizzazione locale; valori non ammessi vengono scartati prima del trasferimento.
 
 ### English
 
@@ -23,6 +24,7 @@
 - Figma panel localized in Italian and English, with deterministic English fallback for locales not yet available.
 - WordPress text domain loaded during `init`; the Pairing page now uses translatable strings as the foundation for distribution catalogues.
 - FEM motion descriptors are now server-validated and retained only in Elementor elements’ `_fem` metadata.
+- The Figma plugin exports `fem-motion` only after local normalization; disallowed values are dropped before transfer.
 
 ## v2.0.0-beta.1 — 2026-09-07
 

@@ -148,6 +148,15 @@ test('an explicit reviews layer mapping is preserved for the WordPress widget co
   assert.deepEqual(JSON.parse(JSON.stringify(choice)), { widget: 'reviews', source: 'override' });
 });
 
+test('a valid declarative motion setting reaches the FEM document', async () => {
+  const { context } = harness();
+  context.figma.currentPage.selection = [{ id: 'motion', name: 'Hero', type: 'FRAME', children: [], layoutMode: 'VERTICAL', getPluginData: key => key === 'fem-motion' ? JSON.stringify({ preset: 'fade-up', trigger: 'viewport', durationMs: 600, delayMs: 0, easing: 'power2.out', once: true, staggerMs: 0 }) : '' }];
+
+  const { document } = await vm.runInContext('extractSelection(figma.currentPage.selection)', context);
+
+  assert.equal(document.nodes['urn:fem:figma:local-file:motion'].motion.preset, 'fade-up');
+});
+
 test('layer mapping panel offers the reviews widget explicitly', () => {
   const ui = readFileSync(require('node:path').join(__dirname, '../src/ui/index.html'), 'utf8');
 

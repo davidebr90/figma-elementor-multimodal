@@ -306,6 +306,18 @@ function legacyResponsiveOf(node) {
 }
 const responsiveOf = globalThis.__femResponsiveOf || legacyResponsiveOf;
 
+function motionOf(node) {
+  if (typeof node.getPluginData !== 'function') return null;
+  try {
+    const value = JSON.parse(node.getPluginData('fem-motion') || '');
+    if (!value || !['fade', 'fade-up', 'fade-down', 'slide-left', 'slide-right', 'scale-in', 'reveal', 'stagger-children'].includes(value.preset)
+      || !['viewport', 'load'].includes(value.trigger) || !Number.isInteger(value.durationMs) || value.durationMs < 100 || value.durationMs > 5000
+      || !Number.isInteger(value.delayMs) || value.delayMs < 0 || value.delayMs > 5000 || !Number.isInteger(value.staggerMs) || value.staggerMs < 0 || value.staggerMs > 1000
+      || !['power2.out', 'power2.inOut', 'none'].includes(value.easing) || typeof value.once !== 'boolean') return null;
+    return value;
+  } catch (error) { return null; }
+}
+
 function legacyResponsiveKey(node, index) {
   return `${index}:${String(node.name || '').trim().toLowerCase()}`;
 }
@@ -414,6 +426,8 @@ async function extractSelection(selection) {
       content: { name: node.name || '' },
       provenance: { node: { origin: 'figma', method: 'dynamic-page-selection' } },
     };
+    const motion = motionOf(node);
+    if (motion) entry.motion = motion;
 
     const background = solidColor(node.fills);
     if (background && node.type !== 'TEXT') entry.style.background = background;
