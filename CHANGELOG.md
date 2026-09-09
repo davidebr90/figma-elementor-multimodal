@@ -9,6 +9,7 @@
 - Normalizzazione dei metadati responsive legacy e applicazione esplicita di tipografia, geometria immagine, paint e bordi nei breakpoint Elementor.
 - Correzione di una race condition: dopo upload concorrenti lo staging ricalcola gli asset mancanti prima di esporre lo stato o consentire il commit.
 - Supporto esplicito per la mappatura **Reviews** nel plugin Figma e conversione delle card testuali leggibili in slider recensioni Elementor.
+- Pannello Figma localizzato in italiano e inglese, con fallback inglese deterministico per le lingue non ancora disponibili.
 
 ### English
 
@@ -17,6 +18,7 @@
 - Legacy responsive-metadata normalization plus explicit Elementor breakpoint handling for typography, image geometry, paint, and borders.
 - Fixed a race condition: staging recomputes missing assets after concurrent uploads before reporting status or allowing commit.
 - Explicit **Reviews** mapping in the Figma plugin and readable review-card projection into Elementor review sliders.
+- Figma panel localized in Italian and English, with deterministic English fallback for locales not yet available.
 
 ## v2.0.0-beta.1 — 2026-09-07
 

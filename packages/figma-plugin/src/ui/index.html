@@ -48,35 +48,41 @@
   </style>
   <body>
     <main>
-      <p id="status">Enter the WordPress URL and one-time pairing details.</p>
+      <p id="status" data-i18n="connectionPrompt">Enter the WordPress URL and one-time pairing details.</p>
       <h1>FEM Private Import</h1>
-      <label for="base-url">WordPress URL</label>
+      <label for="base-url" data-i18n="wordpressUrl">WordPress URL</label>
       <input id="base-url" type="url" placeholder="https://example.com">
-      <label for="pairing-id">Pairing ID</label>
+      <label for="pairing-id" data-i18n="pairingId">Pairing ID</label>
       <input id="pairing-id" type="text" autocomplete="off">
-      <label for="pairing-code">Pairing code</label>
+      <label for="pairing-code" data-i18n="pairingCode">Pairing code</label>
       <input id="pairing-code" type="text" autocomplete="off">
-      <button id="connect" type="button">Connect to WordPress</button>
-      <label for="page">WordPress page</label>
+      <button id="connect" type="button" data-i18n="connect">Connect to WordPress</button>
+      <label for="page" data-i18n="wordpressPage">WordPress page</label>
       <select id="page" disabled>
-        <option value="">Connect first…</option>
+        <option value="" data-i18n="connectFirst">Connect first…</option>
       </select>
-      <label for="render-target">Output editor</label>
+      <label for="render-target" data-i18n="outputEditor">Output editor</label>
       <select id="render-target" disabled><option value="elementor">Elementor</option><option value="wordpress-blocks">WordPress Blocks</option></select>
-      <p class="hint">Choose which editor receives this Figma selection. Both outputs keep FEM identity metadata.</p>
-      <h2 class="section">Layer mapping</h2>
-      <p class="hint">Auto choices are guesses. Anything you set here is saved on the Figma layer and reused on every import.</p>
-      <div id="outline"><p class="hint">Select a frame on the canvas.</p></div>
-      <button id="export" type="button" disabled>Import selection</button>
-      <button id="sync-ds" type="button" disabled>Sync design system</button>
-      <h2 class="section">Responsive variants <span class="badge">optional</span></h2>
-      <p class="hint">Select the matching block on the canvas, capture Desktop, Tablet and Mobile, then import. Skip this section to use automatic responsive rules.</p>
-      <div class="responsive-actions"><button class="capture-responsive" data-viewport="desktop" type="button">Capture desktop</button><button class="capture-responsive" data-viewport="tablet" type="button">Capture tablet</button><button class="capture-responsive" data-viewport="mobile" type="button">Capture mobile</button></div>
-      <p id="responsive-status" class="hint">No explicit variants captured.</p>
-      <button id="clear-responsive" type="button">Clear variants / automatic import</button>
-      <p class="hint">Sends Figma colour variables and text styles to Elementor global colours and fonts.</p>
+      <p class="hint" data-i18n="outputHint">Choose which editor receives this Figma selection. Both outputs keep FEM identity metadata.</p>
+      <h2 class="section" data-i18n="layerMapping">Layer mapping</h2>
+      <p class="hint" data-i18n="mappingHint">Auto choices are guesses. Anything you set here is saved on the Figma layer and reused on every import.</p>
+      <div id="outline"><p class="hint" data-i18n="selectFrame">Select a frame on the canvas.</p></div>
+      <button id="export" type="button" disabled data-i18n="importSelection">Import selection</button>
+      <button id="sync-ds" type="button" disabled data-i18n="syncDesignSystem">Sync design system</button>
+      <h2 class="section"><span data-i18n="responsiveVariants">Responsive variants</span> <span class="badge" data-i18n="optional">optional</span></h2>
+      <p class="hint" data-i18n="responsiveHint">Select the matching block on the canvas, capture Desktop, Tablet and Mobile, then import. Skip this section to use automatic responsive rules.</p>
+      <div class="responsive-actions"><button class="capture-responsive" data-viewport="desktop" type="button" data-i18n="captureDesktop">Capture desktop</button><button class="capture-responsive" data-viewport="tablet" type="button" data-i18n="captureTablet">Capture tablet</button><button class="capture-responsive" data-viewport="mobile" type="button" data-i18n="captureMobile">Capture mobile</button></div>
+      <p id="responsive-status" class="hint" data-i18n="responsiveEmpty">No explicit variants captured.</p>
+      <button id="clear-responsive" type="button" data-i18n="autoImport">Clear variants / automatic import</button>
+      <p class="hint" data-i18n="designSystemHint">Sends Figma colour variables and text styles to Elementor global colours and fonts.</p>
     </main>
-    <script>
+    <script type="module">
+      import { createTranslator } from './i18n.js';
+
+      const t = createTranslator(navigator.language);
+      document.querySelectorAll('[data-i18n]').forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
       const status = document.querySelector('#status');
       const exportButton = document.querySelector('#export');
       const connectButton = document.querySelector('#connect');
@@ -113,7 +119,7 @@
       function renderOutline(items) {
         outline.innerHTML = '';
         if (!items.length) {
-          outline.innerHTML = '<p class="hint">Select a frame on the canvas.</p>';
+          outline.innerHTML = `<p class="hint">${t('selectFrame')}</p>`;
           return;
         }
         for (const item of items) {
@@ -128,12 +134,12 @@
 
           const badge = document.createElement('span');
           badge.className = 'badge ' + item.source;
-          badge.textContent = item.source === 'override' ? 'set' : (item.source === 'name' ? 'name' : 'auto');
+          badge.textContent = item.source === 'override' ? t('set') : (item.source === 'name' ? t('name') : t('auto'));
 
           const select = document.createElement('select');
           const auto = document.createElement('option');
           auto.value = '';
-          auto.textContent = 'Auto (' + item.widget + ')';
+          auto.textContent = t('auto') + ' (' + item.widget + ')';
           select.appendChild(auto);
           for (const widget of WIDGETS) {
             const option = document.createElement('option');
@@ -161,7 +167,7 @@
           pageSelect.innerHTML = '';
           const none = document.createElement('option');
           none.value = '';
-          none.textContent = pages.length ? 'Choose a page…' : 'No editable page found';
+          none.textContent = pages.length ? t('connectFirst') : t('noEditablePage');
           pageSelect.appendChild(none);
           for (const page of pages) {
             const option = document.createElement('option');
@@ -182,7 +188,7 @@
         }
         if (message.type === 'responsive-cleared') {
           capturedViewports.clear();
-          responsiveStatus.textContent = 'Automatic import: current selection, no captured variants.';
+          responsiveStatus.textContent = t('responsiveEmpty');
         }
         if (message.type === 'status') {
           setStatus(message.message, message.error ? 'err' : (message.done ? 'ok' : 'busy'));

@@ -15,6 +15,10 @@ On Linux, install [Figma-Linux](https://github.com/Figma-Linux/figma-linux) firs
 
 The wizard retains one previous site-specific copy. Before choosing **Restore previous version**, close FEM in Figma and confirm the closure in the wizard.
 
+## Panel language
+
+The FEM panel uses Italian when Figma’s embedded browser reports an Italian locale; all other locales fall back to English. The plugin does not translate layer names, design text, or messages received from the website.
+
 ## Connect WordPress
 
 1. Generate a code in WordPress under **Tools → FEM Pairing**.
