@@ -10,6 +10,20 @@ use PHPUnit\Framework\TestCase;
 
 final class SchemaValidatorTest extends TestCase
 {
+    public function testValidatesOnlyAllowlistedMotionDescriptors(): void
+    {
+        $document = $this->document();
+        $document['nodes']['root']['motion'] = ['preset' => 'fade-up', 'trigger' => 'viewport', 'durationMs' => 600, 'delayMs' => 0, 'easing' => 'power2.out', 'once' => true, 'staggerMs' => 0];
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+
+        (new SchemaValidator())->assertValid($document);
+
+        $document['nodes']['root']['motion']['preset'] = 'arbitrary-script';
+        $document['integrity']['contentHash'] = DocumentIntegrity::contentHash($document);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('motion');
+        (new SchemaValidator())->assertValid($document);
+    }
     public function testUnknownWidgetIsRejectedAtTheImportBoundary(): void
     {
         $document = $this->document();

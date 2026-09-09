@@ -671,6 +671,9 @@ final class Transpiler
             'sourceNodeId' => (string) ($node['sourceNodeId'] ?? ''),
             'sourceIdentity' => (string) ($this->document['source']['identity'] ?? ''),
         ];
+        if (is_array($node['motion'] ?? null)) {
+            $settings['_fem']['motion'] = $node['motion'];
+        }
         $element['settings'] = $settings;
         return $element;
     }

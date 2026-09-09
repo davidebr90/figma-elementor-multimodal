@@ -79,6 +79,7 @@ final class SchemaValidator
             if (!is_string($node['widget'] ?? null) || !in_array($node['widget'], self::ALLOWED_WIDGETS, true)) {
                 throw new \InvalidArgumentException('FEM node ' . $id . ' has an unsupported widget.');
             }
+            $this->assertMotion($node['motion'] ?? null);
             $visiting[$id] = true;
             $reachable[$id] = true;
             foreach ($node['children'] as $child) {
@@ -121,6 +122,25 @@ final class SchemaValidator
         }
         if (!hash_equals((string) $integrity['contentHash'], DocumentIntegrity::contentHash($document))) {
             throw new \InvalidArgumentException('FEM document integrity does not match its content.');
+        }
+    }
+
+    private function assertMotion(mixed $motion): void
+    {
+        if ($motion === null) {
+            return;
+        }
+        if (
+            !is_array($motion)
+            || !in_array($motion['preset'] ?? null, ['fade', 'fade-up', 'fade-down', 'slide-left', 'slide-right', 'scale-in', 'reveal', 'stagger-children'], true)
+            || !in_array($motion['trigger'] ?? null, ['viewport', 'load'], true)
+            || !is_int($motion['durationMs'] ?? null) || $motion['durationMs'] < 100 || $motion['durationMs'] > 5000
+            || !is_int($motion['delayMs'] ?? null) || $motion['delayMs'] < 0 || $motion['delayMs'] > 5000
+            || !is_int($motion['staggerMs'] ?? null) || $motion['staggerMs'] < 0 || $motion['staggerMs'] > 1000
+            || !is_bool($motion['once'] ?? null)
+            || !in_array($motion['easing'] ?? null, ['power2.out', 'power2.inOut', 'none'], true)
+        ) {
+            throw new \InvalidArgumentException('FEM motion descriptor is invalid.');
         }
     }
 

@@ -13,6 +13,15 @@ use PHPUnit\Framework\TestCase;
  */
 final class TranspilerTest extends TestCase
 {
+    public function testValidMotionIsRetainedOnlyInNamespacedFemMetadata(): void
+    {
+        $nodes = ['root' => self::node('root', 'container', ['motion' => ['preset' => 'fade-up', 'trigger' => 'viewport', 'durationMs' => 600, 'delayMs' => 0, 'easing' => 'power2.out', 'once' => true, 'staggerMs' => 0]])];
+
+        $settings = (new Transpiler())->transpile(self::document($nodes, 'root'))['elements'][0]['settings'];
+
+        self::assertSame('fade-up', $settings['_fem']['motion']['preset']);
+        self::assertArrayNotHasKey('custom_css', $settings);
+    }
     public function testExplicitMobileValuesOverrideInferredLayout(): void
     {
         $nodes = [
