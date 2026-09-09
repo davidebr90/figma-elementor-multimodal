@@ -10,6 +10,7 @@
 - Correzione di una race condition: dopo upload concorrenti lo staging ricalcola gli asset mancanti prima di esporre lo stato o consentire il commit.
 - Supporto esplicito per la mappatura **Reviews** nel plugin Figma e conversione delle card testuali leggibili in slider recensioni Elementor.
 - Pannello Figma localizzato in italiano e inglese, con fallback inglese deterministico per le lingue non ancora disponibili.
+- Text domain WordPress caricato durante `init`; la pagina Pairing usa ora stringhe traducibili come base per i cataloghi della distribuzione.
 
 ### English
 
@@ -19,6 +20,7 @@
 - Fixed a race condition: staging recomputes missing assets after concurrent uploads before reporting status or allowing commit.
 - Explicit **Reviews** mapping in the Figma plugin and readable review-card projection into Elementor review sliders.
 - Figma panel localized in Italian and English, with deterministic English fallback for locales not yet available.
+- WordPress text domain loaded during `init`; the Pairing page now uses translatable strings as the foundation for distribution catalogues.
 
 ## v2.0.0-beta.1 — 2026-09-07
 

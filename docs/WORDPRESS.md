@@ -1,5 +1,9 @@
 # Configurazione WordPress
 
+## Lingua dell’amministrazione
+
+La pagina **Strumenti → FEM Pairing** usa il text domain `figma-elementor-multimodal` e segue la lingua impostata nell’amministrazione WordPress. L’inglese resta la lingua sorgente; il catalogo italiano viene completato insieme alle restanti superfici amministrative nella linea beta 2.0.
+
 ## Requisiti e compatibilità
 
 | Componente | Requisito |

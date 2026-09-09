@@ -16,6 +16,15 @@ use PHPUnit\Framework\TestCase;
 
 final class PluginPairingUiTest extends TestCase
 {
+    public function testPluginDeclaresItsTranslationDomainAndLoadsItOnInit(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 2) . '/src/Plugin.php');
+
+        self::assertStringContainsString("public const TEXT_DOMAIN = 'figma-elementor-multimodal'", $source);
+        self::assertStringContainsString("add_action('init', [self::class, 'loadTranslations'])", $source);
+        self::assertStringContainsString('load_plugin_textdomain(self::TEXT_DOMAIN', $source);
+    }
+
     public function testPairingFieldContainsItsValueAndAccessibleCopyControl(): void
     {
         $method = new \ReflectionMethod(Plugin::class, 'pairingField');

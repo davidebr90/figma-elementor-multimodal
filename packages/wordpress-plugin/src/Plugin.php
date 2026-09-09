@@ -28,6 +28,7 @@ final class Plugin
     public const MINIMUM_PHP = '8.3.0';
     public const MINIMUM_WORDPRESS = '7.0';
     public const MINIMUM_ELEMENTOR = '3.20.0';
+    public const TEXT_DOMAIN = 'figma-elementor-multimodal';
 
     private static bool $booted = false;
 
@@ -44,6 +45,7 @@ final class Plugin
             add_action('rest_api_init', [self::class, 'registerRestRoutes']);
             add_action('admin_menu', [self::class, 'registerAdminMenu']);
             add_action('init', [self::class, 'registerBlocks']);
+            add_action('init', [self::class, 'loadTranslations']);
         }
 
         if (!self::elementorLoaded()) {
@@ -119,10 +121,17 @@ final class Plugin
         }
     }
 
+    public static function loadTranslations(): void
+    {
+        if (function_exists('load_plugin_textdomain')) {
+            load_plugin_textdomain(self::TEXT_DOMAIN, false, 'figma-elementor-multimodal/languages');
+        }
+    }
+
     public static function registerAdminMenu(): void
     {
         if (function_exists('add_management_page')) {
-            add_management_page('FEM Pairing', 'FEM Pairing', 'manage_fem_imports', 'fem-pairing', [self::class, 'adminPage']);
+            add_management_page(self::translate('FEM Pairing'), self::translate('FEM Pairing'), 'manage_fem_imports', 'fem-pairing', [self::class, 'adminPage']);
         }
     }
 
@@ -144,7 +153,7 @@ final class Plugin
             }
         }
         $ttl = self::credentialTtlKey();
-        echo '<div class="wrap fem-pairing-page"><h1>FEM Pairing</h1><p>Use these values in the FEM plugin inside Figma. The pairing code expires in ten minutes.</p>';
+        echo '<div class="wrap fem-pairing-page"><h1>' . esc_html(self::translate('FEM Pairing')) . '</h1><p>' . esc_html(self::translate('Use these values in the FEM plugin inside Figma. The pairing code expires in ten minutes.')) . '</p>';
         if ($pairing !== null) {
             echo '<div class="notice notice-success"><p><strong>Pairing ready.</strong> Copy the values below into Figma. The code will not be shown again.</p></div><div class="fem-pairing-card">';
             echo self::pairingField('WordPress site URL', 'fem-site-url', self::siteUrl());
@@ -177,7 +186,12 @@ final class Plugin
     private static function pairingField(string $label, string $id, string $value): string
     {
         return '<div class="fem-pairing-field"><label>' . esc_html($label) . ' <input id="' . esc_attr($id) . '" class="regular-text" readonly value="' . esc_attr($value) . '"></label> '
-            . '<button type="button" class="button fem-copy" data-target="' . esc_attr($id) . '" data-label="' . esc_attr($label) . '" aria-label="Copy ' . esc_attr($label) . '">Copy</button></div>';
+            . '<button type="button" class="button fem-copy" data-target="' . esc_attr($id) . '" data-label="' . esc_attr($label) . '" aria-label="' . esc_attr(self::translate('Copy') . ' ' . $label) . '">' . esc_html(self::translate('Copy')) . '</button></div>';
+    }
+
+    private static function translate(string $text): string
+    {
+        return function_exists('__') ? (string) __($text, self::TEXT_DOMAIN) : $text;
     }
 
     private static function scheduleAuditPrune(): void
